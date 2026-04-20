@@ -7,8 +7,6 @@ I created this fork mostly for fun and to use on my own small Minecraft server. 
 
 **Will it be updated?** I might maintain and update it in the future, but *only* if my server requires it. Please keep in mind that active support is not guaranteed!
 
----
-
 ## 🌐 Original Project Links
 All credit for the core plugin and mod goes to the original author, **tom5454**. Create a custom avatar using their editor!
 
