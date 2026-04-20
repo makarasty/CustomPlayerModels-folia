@@ -1,6 +1,4 @@
-/CustomPlayerModels-1.21.11/build
-/CustomPlayerModels-1.21.11/.gradle
-/CustomPlayerModels-Bukkit/.gradle
-/CustomPlayerModels-Bukkit/build
-/CustomPlayerModels-1.21.11/.idea
-/CustomPlayerModels-1.21.11/runs/junit
+/*/build
+/*/.gradle
+/*/.idea
+/*/runs/junit
