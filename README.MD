@@ -1,36 +1,35 @@
-# Custom Player Models - Folia Edition
+# Custom Player Models - Folia Support
 
-This is an unofficial fork of [CustomPlayerModels](https://github.com/tom5454/CustomPlayerModels) that adds support for **Folia** servers.
+This repository contains an unofficial fork of [CustomPlayerModels](https://github.com/tom5454/CustomPlayerModels), introducing compatibility with **Folia**-based server environments.
 
-## ⚠️ About this Fork & Maintenance
-I created this fork mostly for fun and for my own small Minecraft server. To be completely honest, about 50% of the Folia adaptation code was written by AI. 🤖 
+## Maintenance Policy
+This fork is maintained on an as-needed basis to fulfill specific server infrastructure requirements. While the codebase is functional for current targets, ongoing support, active feature backports, or immediate updates for future Minecraft/Folia versions are not guaranteed. Use in production environments at your own discretion.
 
-**Will it be updated?** I might maintain and update it in the future, but *only* if my server requires it. Please keep in mind that active support is not guaranteed!
+## Installation & Build Instructions
 
-## 📥 Installation
+### Prerequisites
+> **Requirement:** **Java 21** or higher is strictly required for both executing the plugin and compiling the source code.
 
-> **⚠️ Requirement:** This plugin requires **Java 21** to run and build!
+### Pre-compiled Binaries
+Production-ready `.jar` artifacts are available in the repository's Releases section:
+👉 [Download Releases](https://github.com/makarasty/CustomPlayerModels-folia/releases)
 
-### Download Ready-to-Use Jar
-You can find pre-built versions of the plugin in the **Releases** section:
-👉 [Download here](https://github.com/makarasty/CustomPlayerModels-folia/releases)
-
-### Build from Source
-If you want to build the project yourself, ensure you have Java 21 installed and use the following commands:
+### Building from Source
+To compile the project locally, clone the repository and execute the Gradle build wrapper:
 ```bash
 cd ./CustomPlayerModels-Folia
 .\gradlew.bat build
-```
+````
 
-## ☕ Support
+## Support
 
-If this fork helped you and you'd like to support my work (or my server's hosting), you can buy me a coffee:
+If you utilize this fork in your environment and wish to support its continued availability and associated hosting costs, contributions are appreciated:
 
   * **Ko-fi:** [ko-fi.com/makarasty](https://ko-fi.com/makarasty)
 
-## 🌐 Original Project Links
+## Upstream Project & Credits
 
-All credit for the core plugin and mod goes to the original author, **tom5454**. Create a custom avatar using their editor\!
+All core functionalities, client mods, and editors are the intellectual property of the original author, **tom5454**. For generalized support, model creation, or documentation, please refer to the upstream resources:
 
   * **Wiki & Documentation:** [GitHub Wiki](https://github.com/tom5454/CustomPlayerModels/wiki)
   * **Discord:** [Join the CPM Community](https://discord.gg/mKyXdEsMZD)
