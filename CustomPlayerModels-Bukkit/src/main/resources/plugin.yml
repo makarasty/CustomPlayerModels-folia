@@ -18,3 +18,4 @@ permissions:
   cpm.command:
     default: op
     description: access to cpm command
+folia-supported: true

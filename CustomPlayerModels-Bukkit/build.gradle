@@ -7,9 +7,10 @@ version = project.mod_version
 group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'CustomPlayerModels-Bukkit'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '21' // Need this here so eclipse task generates correctly.
 
 repositories {
+    maven { url "https://repo.papermc.io/repository/maven-public/" }
     mavenCentral()
     maven {
         url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
@@ -21,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly "org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT"
     compileOnly "io.netty:netty-all:4.1.25.Final"
     compileOnly "com.mojang:brigadier:1.0.18"
     compileOnly "dev.jorel:commandapi-bukkit-core:9.4.1"
@@ -69,6 +70,13 @@ spigot {
 }
 
 processResources.finalizedBy(spigotPlugin)
+
+spigotPlugin.doLast {
+    def file = file("$buildDir/resources/main/plugin.yml")
+    if (file.exists() && !file.text.contains("folia-supported")) {
+        file.append("\nfolia-supported: true\n")
+    }
+}
 
 java {
 	withSourcesJar()
