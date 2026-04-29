@@ -183,12 +183,18 @@ public class Network implements PluginMessageListener, Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent evt) {
-        evt.getPlayer().getScheduler().runDelayed(plugin, t -> startPlayerTick(evt.getPlayer()), null, 1L);
+        Player player = evt.getPlayer();
+        Meta mt = getMetadata(player);
+        mt.trackingPlayers.clear();
+        player.getScheduler().runDelayed(plugin, t -> startPlayerTick(player), null, 1L);
     }
 
     @EventHandler
     public void onPlayerChangedWorld(PlayerChangedWorldEvent evt) {
-        evt.getPlayer().getScheduler().runDelayed(plugin, t -> startPlayerTick(evt.getPlayer()), null, 1L);
+        Player player = evt.getPlayer();
+        Meta mt = getMetadata(player);
+        mt.trackingPlayers.clear();
+        player.getScheduler().runDelayed(plugin, t -> startPlayerTick(player), null, 1L);
     }
 
     @EventHandler
