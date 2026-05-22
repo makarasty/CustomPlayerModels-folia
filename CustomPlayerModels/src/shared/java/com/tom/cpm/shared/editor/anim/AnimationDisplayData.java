@@ -75,6 +75,8 @@ public enum AnimationDisplayData {
 	BRUSH_LEFT(VanillaPose.BRUSH_LEFT, ItemSlot.LEFT_HAND, DisplayItem.BRUSH, Type.HAND),
 	BRUSH_RIGHT(VanillaPose.BRUSH_RIGHT, ItemSlot.RIGHT_HAND, DisplayItem.BRUSH, Type.HAND),
 	CRAWLING(VanillaPose.CRAWLING, null, null, Type.POSE),
+	SPEAR_LEFT(VanillaPose.SPEAR_LEFT, ItemSlot.LEFT_HAND, DisplayItem.SPEAR, Type.HAND),
+	SPEAR_RIGHT(VanillaPose.SPEAR_RIGHT, ItemSlot.RIGHT_HAND, DisplayItem.SPEAR, Type.HAND),
 	;
 	public final VanillaPose pose;
 	public final ItemSlot slot;

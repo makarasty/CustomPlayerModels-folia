@@ -31,3 +31,5 @@ accessible field net/minecraft/client/resource/language/TranslationStorage trans
 
 accessible field net/minecraft/class_488 field_2004 Ljava/util/Set;
 accessible field net/minecraft/class_488 field_2005 Lnet/minecraft/class_80;
+
+accessible field net/minecraft/network/Connection field_1282 Ljava/net/SocketAddress;

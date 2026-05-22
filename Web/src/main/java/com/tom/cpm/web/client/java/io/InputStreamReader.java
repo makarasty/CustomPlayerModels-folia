@@ -16,10 +16,7 @@ public class InputStreamReader extends Reader implements FakeReader {
 	private StringReader rd;
 
 	public InputStreamReader(InputStream in) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		IOHelper.copy(in, baos);
-		text = new String(baos.toByteArray(), StandardCharsets.ISO_8859_1);
-		rd = new StringReader(text);
+		this(in, StandardCharsets.ISO_8859_1);
 	}
 
 	public InputStreamReader(InputStream in, Charset cs) throws IOException {

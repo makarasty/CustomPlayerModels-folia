@@ -7,11 +7,13 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.network.chat.Component;
 
 import com.tom.cpm.client.PlayerRenderStateAccess;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 
 @Mixin(PlayerRenderState.class)
 public class PlayerRenderStateMixin implements PlayerRenderStateAccess {
 	private @Unique Player<net.minecraft.world.entity.player.Player> cpm$player;
+	private @Unique AnimationState cpm$animState;
 	private @Unique Component cpm$modelStatus;
 
 	@Override
@@ -22,6 +24,16 @@ public class PlayerRenderStateMixin implements PlayerRenderStateAccess {
 	@Override
 	public Player<net.minecraft.world.entity.player.Player> cpm$getPlayer() {
 		return cpm$player;
+	}
+
+	@Override
+	public void cpm$setAnimationState(AnimationState state) {
+		cpm$animState = state;
+	}
+
+	@Override
+	public AnimationState cpm$getAnimationState() {
+		return cpm$animState;
 	}
 
 	@Override

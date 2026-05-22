@@ -460,7 +460,7 @@ public class AnimTestPanel extends Panel {
 			@Override
 			public void run() {
 				long playTime = MinecraftClientAccess.get().getPlayerRenderManager().getAnimationEngine().getTime();
-				anim.animate(playTime - playStartTime, editor.definition, AnimationMode.PLAYER);
+				anim.animate(null, playTime - playStartTime, editor.definition, AnimationMode.PLAYER);
 			}
 
 			public int getPriority() {

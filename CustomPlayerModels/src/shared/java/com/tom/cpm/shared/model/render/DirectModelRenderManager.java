@@ -7,7 +7,7 @@ import com.tom.cpl.math.MatrixStack;
 import com.tom.cpl.math.Vec4f;
 import com.tom.cpl.render.VBuffers;
 import com.tom.cpl.render.VertexBuffer;
-import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.editor.elements.RootGroups;
 import com.tom.cpm.shared.model.PlayerModelParts;
@@ -243,13 +243,13 @@ public abstract class DirectModelRenderManager<R> extends ModelRenderManager<VBu
 		}
 	}
 
-	public void setupSkin(R h, VanillaPlayerModel p, VBuffers rp, ModelDefinition def, AnimationMode animMode) {
-		bindModel(p, PLAYER, rp, def, null, animMode);
+	public void setupSkin(R h, VanillaPlayerModel p, VBuffers rp, ModelDefinition def, AnimationState state) {
+		bindModel(p, PLAYER, rp, def, null, state);
 		bindSkin(p, h, TextureSheetType.SKIN);
 	}
 
-	public void setupLayer(R h, PlayerModelLayer layer, VanillaPlayerModel p, VBuffers rp, ModelDefinition def, AnimationMode animMode) {
-		bindModel(p, layer.name(), rp, def, null, animMode);
+	public void setupLayer(R h, PlayerModelLayer layer, VanillaPlayerModel p, VBuffers rp, ModelDefinition def, AnimationState state) {
+		bindModel(p, layer.name(), rp, def, null, state);
 		bindSkin(p, h, RootGroups.getGroup(layer.parts[0]).getTexSheet(layer.parts[0]));
 	}
 }

@@ -29,6 +29,7 @@ import com.tom.cpm.client.ModelTexture;
 import com.tom.cpm.client.PlayerProfile;
 import com.tom.cpm.client.PlayerRenderStateAccess;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinitionLoader;
 import com.tom.cpm.shared.model.TextureSheetType;
@@ -123,10 +124,12 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 		PlayerRenderStateAccess sa = (PlayerRenderStateAccess) playerRenderState;
 		FormatText st = CustomPlayerModelsClient.INSTANCE.manager.getStatus(abstractClientPlayer.getGameProfile(), ModelDefinitionLoader.PLAYER_UNIQUE);
 		sa.cpm$setModelStatus(st != null ? st.remap() : null);
-		var pl = CustomPlayerModelsClient.INSTANCE.manager.loadPlayerState(abstractClientPlayer.getGameProfile(), abstractClientPlayer, ModelDefinitionLoader.PLAYER_UNIQUE, AnimationMode.PLAYER);
+		AnimationState state = new AnimationState(AnimationMode.PLAYER);
+		var pl = CustomPlayerModelsClient.INSTANCE.manager.loadPlayerState(abstractClientPlayer.getGameProfile(), abstractClientPlayer, ModelDefinitionLoader.PLAYER_UNIQUE, state);
 		sa.cpm$setPlayer(pl);
+		sa.cpm$setAnimationState(state);
 		if (pl != null) {
-			((PlayerProfile) pl).updateFromState(getModel(), playerRenderState);
+			((PlayerProfile) pl).updateFromState(state, getModel(), playerRenderState);
 		}
 	}
 }

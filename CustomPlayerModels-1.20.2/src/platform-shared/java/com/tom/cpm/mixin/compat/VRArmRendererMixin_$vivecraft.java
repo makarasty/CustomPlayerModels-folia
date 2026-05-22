@@ -39,12 +39,12 @@ public class VRArmRendererMixin_$vivecraft extends PlayerRenderer {
 
 	@Inject(at = @At("RETURN"), method = "renderRightHand(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;)V")
 	public void onRenderRightArmPost(PoseStack matrices, MultiBufferSource vertexConsumers, int light, AbstractClientPlayer player, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Inject(at = @At("RETURN"), method = "renderLeftHand(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;)V")
 	public void onRenderLeftArmPost(PoseStack matrices, MultiBufferSource vertexConsumers, int light, AbstractClientPlayer player, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Redirect(at =

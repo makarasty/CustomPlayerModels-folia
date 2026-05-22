@@ -12,6 +12,7 @@ import com.tom.cpm.common.WorldImpl;
 import com.tom.cpm.retro.GameProfile;
 import com.tom.cpm.retro.GameProfileManager;
 import com.tom.cpm.retro.NetHandlerExt.IPlayerProfile;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -71,7 +72,7 @@ public class PlayerProfile extends Player<net.minecraft.core.entity.player.Playe
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateFromPlayer(net.minecraft.core.entity.player.Player player) {
+	public void updateFromPlayer(AnimationState animState, net.minecraft.core.entity.player.Player player) {
 		animState.resetPlayer();
 		if(player.isPlayerSleeping())animState.sleeping = true;
 		if(!player.isAlive())animState.dying = true;
@@ -108,7 +109,7 @@ public class PlayerProfile extends Player<net.minecraft.core.entity.player.Playe
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof ModelBiped) {
 			ModelBiped m = (ModelBiped) model;
 			animState.resetModel();

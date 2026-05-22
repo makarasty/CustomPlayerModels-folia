@@ -11,7 +11,6 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemElytra;
@@ -32,6 +31,7 @@ import com.tom.cpl.util.HandAnimation;
 import com.tom.cpm.common.EntityTypeHandlerImpl;
 import com.tom.cpm.common.PlayerInventory;
 import com.tom.cpm.common.WorldImpl;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -92,7 +92,7 @@ public class PlayerProfile extends Player<EntityPlayer> {
 	}
 
 	@Override
-	public void updateFromPlayer(EntityPlayer player) {
+	public void updateFromPlayer(AnimationState animState, EntityPlayer player) {
 		animState.resetPlayer();
 		if(player.isPlayerSleeping())animState.sleeping = true;
 		if(player.isDead)animState.dying = true;
@@ -111,12 +111,7 @@ public class PlayerProfile extends Player<EntityPlayer> {
 		animState.pitch = player.rotationPitch;
 		animState.bodyYaw = player.rotationYawHead;
 
-		if(player.isWearing(EnumPlayerModelParts.HAT))animState.encodedState |= 1;
-		if(player.isWearing(EnumPlayerModelParts.JACKET))animState.encodedState |= 2;
-		if(player.isWearing(EnumPlayerModelParts.LEFT_PANTS_LEG))animState.encodedState |= 4;
-		if(player.isWearing(EnumPlayerModelParts.RIGHT_PANTS_LEG))animState.encodedState |= 8;
-		if(player.isWearing(EnumPlayerModelParts.LEFT_SLEEVE))animState.encodedState |= 16;
-		if(player.isWearing(EnumPlayerModelParts.RIGHT_SLEEVE))animState.encodedState |= 32;
+		animState.encodedState = MinecraftObject.LAYER_CODEC.getValue(player::isWearing);
 
 		ItemStack is = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 		animState.hasSkullOnHead = is != null && is.getItem() instanceof ItemSkull;
@@ -146,7 +141,7 @@ public class PlayerProfile extends Player<EntityPlayer> {
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof ModelPlayer) {
 			ModelPlayer m = (ModelPlayer) model;
 			animState.resetModel();

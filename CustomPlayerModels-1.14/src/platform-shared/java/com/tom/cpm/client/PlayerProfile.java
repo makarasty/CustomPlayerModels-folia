@@ -14,7 +14,6 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager.ISkinAvailableCallback;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BowItem;
@@ -35,6 +34,7 @@ import com.tom.cpl.util.HandAnimation;
 import com.tom.cpm.common.EntityTypeHandlerImpl;
 import com.tom.cpm.common.PlayerInventory;
 import com.tom.cpm.common.WorldImpl;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -103,7 +103,7 @@ public class PlayerProfile extends Player<PlayerEntity> {
 	}
 
 	@Override
-	public void updateFromPlayer(PlayerEntity player) {
+	public void updateFromPlayer(AnimationState animState, PlayerEntity player) {
 		Pose p = player.getPose();
 		animState.resetPlayer();
 		switch (p) {
@@ -136,12 +136,7 @@ public class PlayerProfile extends Player<PlayerEntity> {
 		animState.pitch = player.xRot;
 		animState.bodyYaw = player.yBodyRot;
 
-		if(player.isModelPartShown(PlayerModelPart.HAT))animState.encodedState |= 1;
-		if(player.isModelPartShown(PlayerModelPart.JACKET))animState.encodedState |= 2;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG))animState.encodedState |= 4;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG))animState.encodedState |= 8;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE))animState.encodedState |= 16;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE))animState.encodedState |= 32;
+		animState.encodedState = MinecraftObject.LAYER_CODEC.getValue(player::isModelPartShown);
 
 		ItemStack is = player.getItemBySlot(EquipmentSlotType.HEAD);
 		animState.hasSkullOnHead = is.getItem() instanceof BlockItem && ((BlockItem)is.getItem()).getBlock() instanceof AbstractSkullBlock;
@@ -181,7 +176,7 @@ public class PlayerProfile extends Player<PlayerEntity> {
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof PlayerModel) {
 			PlayerModel m = (PlayerModel) model;
 			animState.resetModel();

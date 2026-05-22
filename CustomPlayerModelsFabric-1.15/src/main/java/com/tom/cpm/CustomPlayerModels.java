@@ -49,7 +49,6 @@ public class CustomPlayerModels extends CommonBase implements ModInitializer {
 			}
 		});
 		LOG.info("Customizable Player Models Initialized");
-		LOG.info(api.getPluginStatus());
 		apiInit();
 	}
 

@@ -485,7 +485,7 @@ public class Editor {
 			if(this.playFullAnim) {
 				long playTime = MinecraftClientAccess.get().getPlayerRenderManager().getAnimationEngine().getTime();
 				long currentStep = (playTime - this.playStartTime);
-				this.selectedAnim.animate(currentStep, definition, AnimationMode.PLAYER);
+				this.selectedAnim.animate(null, currentStep, definition, AnimationMode.PLAYER);
 				if(currentStep > this.selectedAnim.duration && !this.selectedAnim.loop && this.selectedAnim.pose == null){
 					this.playFullAnim = false;
 					setAnimPlay.accept(false);

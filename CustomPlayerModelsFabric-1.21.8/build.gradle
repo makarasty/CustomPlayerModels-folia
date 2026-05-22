@@ -50,6 +50,7 @@ dependencies {
     }
 	
 	compileOnly files("../CustomPlayerModels-1.21.8/stubs/of.jar")
+	compileOnly files("../CustomPlayerModels-1.21.8/stubs/realcamera.jar")
 	
 	/*modCompileOnly('maven.modrinth:sodium:mc1.21.6-0.6.13-fabric')
 	modCompileOnly('maven.modrinth:iris:1.9.1+1.21.7-fabric')
@@ -96,7 +97,6 @@ sourceSets {
 			srcDir "../CustomPlayerModels/src/shared/java"
 			srcDir "../CustomPlayerModels-1.21.8/src/platform-shared/java"
 			srcDir "src/rawmc-shared/java"
-			//exclude "com/tom/cpm/ModMenu.java"
 		}
 		resources {
 			srcDir "../CustomPlayerModels/src/shared/resources"

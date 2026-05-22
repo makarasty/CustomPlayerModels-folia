@@ -22,10 +22,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import com.tom.cpm.client.CustomPlayerModelsClient;
 import com.tom.cpm.client.ModelTexture;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 
 @Mixin(CapeLayer.class)
 public abstract class CapeLayerMixin extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -40,9 +40,9 @@ public abstract class CapeLayerMixin extends RenderLayer<AbstractClientPlayer, P
 	public void onRender(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn,
 			AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo cbi) {
-		Player<?> pl = CustomPlayerModelsClient.INSTANCE.manager.getBoundPlayer();
+		BoundPlayer pl = CustomPlayerModelsClient.INSTANCE.manager.getPlayerFromModel(getParentModel());
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
 				ItemStack chestplate = entitylivingbaseIn.getItemBySlot(EquipmentSlot.CHEST);
 				if(!entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isModelPartShown(PlayerModelPart.CAPE) && chestplate.getItem() != Items.ELYTRA) {

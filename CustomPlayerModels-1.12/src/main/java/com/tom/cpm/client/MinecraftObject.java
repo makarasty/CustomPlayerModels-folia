@@ -45,6 +45,7 @@ import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.network.NetHandler;
 import com.tom.cpm.shared.retro.RetroGLAccess.RetroLayer;
 import com.tom.cpm.shared.util.MojangAPI;
+import com.tom.cpm.shared.util.SkinLayerCodec;
 
 public class MinecraftObject implements MinecraftClientAccess {
 	private final Minecraft mc;
@@ -52,6 +53,15 @@ public class MinecraftObject implements MinecraftClientAccess {
 	private final AllTagManagers tags;
 	private final ModelDefinitionLoader<GameProfile> loader;
 	private final RenderTypeBuilder<ResourceLocation, RetroLayer> renderBuilder = RenderTypeBuilder.setupRetro(new RetroGL());
+
+	public static final SkinLayerCodec<EnumPlayerModelParts> LAYER_CODEC = new SkinLayerCodec<>(new EnumPlayerModelParts[] {
+			EnumPlayerModelParts.HAT,
+			EnumPlayerModelParts.JACKET,
+			EnumPlayerModelParts.LEFT_PANTS_LEG,
+			EnumPlayerModelParts.RIGHT_PANTS_LEG,
+			EnumPlayerModelParts.LEFT_SLEEVE,
+			EnumPlayerModelParts.RIGHT_SLEEVE,
+	});
 
 	public MinecraftObject(Minecraft mc) {
 		this.mc = mc;
@@ -127,20 +137,16 @@ public class MinecraftObject implements MinecraftClientAccess {
 	}
 
 	@Override
-	public void setEncodedGesture(int value) {
+	public int getEncodedGesture() {
 		Set<EnumPlayerModelParts> s = ObfuscationReflectionHelper.getPrivateValue(GameSettings.class, mc.gameSettings, "field_178882_aU");
-		setEncPart(s, value, 0, EnumPlayerModelParts.HAT);
-		setEncPart(s, value, 1, EnumPlayerModelParts.JACKET);
-		setEncPart(s, value, 2, EnumPlayerModelParts.LEFT_PANTS_LEG);
-		setEncPart(s, value, 3, EnumPlayerModelParts.RIGHT_PANTS_LEG);
-		setEncPart(s, value, 4, EnumPlayerModelParts.LEFT_SLEEVE);
-		setEncPart(s, value, 5, EnumPlayerModelParts.RIGHT_SLEEVE);
-		mc.gameSettings.sendSettingsToServer();
+		return LAYER_CODEC.getValue(s::contains);
 	}
 
-	private static void setEncPart(Set<EnumPlayerModelParts> s, int value, int off, EnumPlayerModelParts part) {
-		if((value & (1 << off)) != 0)s.add(part);
-		else s.remove(part);
+	@Override
+	public void setEncodedGesture(int value) {
+		Set<EnumPlayerModelParts> s = ObfuscationReflectionHelper.getPrivateValue(GameSettings.class, mc.gameSettings, "field_178882_aU");
+		LAYER_CODEC.setValue(value, s);
+		mc.gameSettings.sendSettingsToServer();
 	}
 
 	@Override

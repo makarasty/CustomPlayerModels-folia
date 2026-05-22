@@ -509,4 +509,9 @@ public class WebMC implements MinecraftClientAccess, MinecraftCommonAccess, ILog
 	public EntityTypeHandler<?> getEntityTypeHandler() {
 		return EntityTypeHandlerImpl.impl;
 	}
+
+	@Override
+	public int getEncodedGesture() {
+		return 0;
+	}
 }

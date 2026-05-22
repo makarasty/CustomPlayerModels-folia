@@ -52,7 +52,7 @@ public abstract class ClientNetworkHandlerMixin implements ClientNetworkImpl {
 
 	@Override
 	public String cpm$getConnectedServer() {
-		SocketAddress sa = connection.getAddress();
+		SocketAddress sa = connection.field_1282;
 		if (sa instanceof InetSocketAddress)
 			return ((InetSocketAddress) sa).getHostString();
 		return null;

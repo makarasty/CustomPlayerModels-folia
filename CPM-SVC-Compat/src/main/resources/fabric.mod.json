@@ -27,7 +27,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-	"voicechat": ">=1.16.5-${voicechat_dependency}",
-	"cpm": "*"
+	"voicechat": ">=1.16.5-${project.voicechat_api_version}",
+	"cpm": ">=0.6.26a"
   }
 }

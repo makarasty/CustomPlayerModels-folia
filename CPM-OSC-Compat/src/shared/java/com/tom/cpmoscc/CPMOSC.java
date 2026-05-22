@@ -17,6 +17,7 @@ import com.tom.cpl.tag.TagManager;
 import com.tom.cpm.api.IClientAPI;
 import com.tom.cpm.shared.MinecraftClientAccess;
 import com.tom.cpm.shared.MinecraftClientAccess.ServerStatus;
+import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
 import com.tom.cpm.shared.animation.AnimationRegistry;
 import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.animation.CustomPose;
@@ -27,7 +28,6 @@ import com.tom.cpm.shared.config.ModConfig;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.network.ServerCaps;
-import com.tom.cpm.shared.parts.anim.menu.CommandAction;
 import com.tom.cpm.shared.parts.anim.menu.CommandAction.ActionType;
 import com.tom.cpm.shared.parts.anim.menu.CustomPoseGestureButtonData;
 import com.tom.cpm.shared.util.ErrorLog;
@@ -71,20 +71,20 @@ public class CPMOSC {
 							ErrorLog.addLog(LogLevel.WARNING, "OSC Transmitter error", transmit.getError());
 						}
 					}
-					player.updatePlayer(playerIn);
+					AnimationState st = new AnimationState(AnimationMode.PLAYER);
+					player.updatePlayer(playerIn, st);
 					long time = MinecraftClientAccess.get().getPlayerRenderManager().getAnimationEngine().getTime();
-					AnimationState st = player.animState;
 					try {
 						for (Field f : outputFields) {
 							send(st, f);
 						}
 						for (Field f : outputFields2) {
-							send(st.localState, f);
+							send(st.syncState, f);
 						}
 						if(def != null) {
 							AnimationRegistry reg = def.getAnimations();
 							reg.getCommandActionsMap().values().forEach(a -> {
-								if (isCommandControlledTemp(a))return;
+								if (a.isCommandControlled())return;
 								String gid = a.getName().replaceAll("[^a-zA-Z0-9\\.\\-]", "");
 								if (gid.isEmpty())
 									gid = "unnamed";
@@ -110,10 +110,10 @@ public class CPMOSC {
 							IPose currentPose = pose;
 							if (MinecraftClientAccess.get().getNetHandler().hasServerCap(ServerCaps.GESTURES) && st.gestureData != null && st.gestureData.length > 1) {
 								if(st.gestureData[0] != 0) {
-									currentPose = reg.getPoseById(st.gestureData[0], player.currentPose);
+									currentPose = reg.getPoseById(st.gestureData[0], st.currentPose);
 								}
 							} else {
-								currentPose = reg.getPoseById(gesture, player.currentPose);
+								currentPose = reg.getPoseById(gesture, st.currentPose);
 							}
 							if(currentPose instanceof VanillaPose) {
 								VanillaPose e = (VanillaPose) currentPose;
@@ -230,16 +230,5 @@ public class CPMOSC {
 			}
 		}
 		return osc;
-	}
-
-	//TODO update to api method a.isCommandControlled(), missing in current beta test
-	public static boolean isCommandControlledTemp(CommandAction a) {
-		try {
-			Field ccf = a.getClass().getDeclaredField("cc");
-			ccf.setAccessible(true);
-			return ccf.getBoolean(a);
-		} catch (Exception e) {
-			return false;
-		}
 	}
 }

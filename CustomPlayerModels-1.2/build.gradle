@@ -38,6 +38,33 @@ archivesBaseName = "CustomPlayerModels-1.2.5"
 String minecraftVersion = "1.2.5"
 String forgeVersion = "1.2.5-3.4.9.171"
 
+configurations {
+    priority
+    sourceSets.main.compileClasspath = configurations.priority + sourceSets.main.compileClasspath
+    shade
+    implementation.extendsFrom shade
+}
+
+task shadowJarPrimer(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+	from sourceSets.main.output
+	configurations = [project.configurations.shade]
+	
+	relocate 'com.google', 'com.tom.cpm.externals.com.google'
+	relocate 'org.objectweb', 'com.tom.cpm.externals.org.objectweb'
+	
+	exclude 'module-info.class'
+	exclude 'META-INF/maven/**'
+	
+	classifier = 'primer'
+	
+	manifest {
+        attributes(
+                'Premain-Class': 'com.tom.cpmcore.CPMLoadingPlugin')
+    }
+    
+    from(files("${buildDir}/at"))
+}
+
 volde {
 	runs {
 		client {
@@ -50,8 +77,8 @@ volde {
 			vmArg "-Dcpmcore.env.client=true"
 			vmArg "-Dcpmcore.asm_dump=true"
 			vmArg "-Dcpmcore.dump=\"" + file("${buildDir}/obf_dump.cfg").absolutePath + "\""
-			vmArg "-Dcpmcore.dumpsrc=\"" + file("run/$archivesBaseName-${version}.jar").absolutePath + "\""
-			vmArg "-javaagent:\"" + file("run/$archivesBaseName-${version}.jar").absolutePath + "\""
+			vmArg "-Dcpmcore.dumpsrc=\"" + shadowJarPrimer.archivePath + "\""
+			vmArg "-javaagent:\"" + shadowJarPrimer.archivePath + "\""
 		}
 		obfDump {
 			environment = "client"
@@ -60,10 +87,18 @@ volde {
 			vmArg "-Dcpmcore.deobf=true"
 			vmArg "-Dcpmcore.env.client=true"
 			vmArg "-Dcpmcore.dump=\"" + file("${buildDir}/obf_dump.cfg").absolutePath + "\""
-			vmArg "-Dcpmcore.dumpsrc=\"" + file("run/$archivesBaseName-${version}.jar").absolutePath + "\""
-			vmArg "-javaagent:\"" + file("run/$archivesBaseName-${version}.jar").absolutePath + "\""
+			vmArg "-Dcpmcore.dumpsrc=\"" + shadowJarPrimer.archivePath + "\""
+			vmArg "-javaagent:\"" + shadowJarPrimer.archivePath + "\""
 			vmArg "-Dcpmcore.dump.exit=true"
 		}
+	}
+}
+
+afterEvaluate {
+	tasks.withType(JavaExec) { task ->
+	    if (task.name.startsWith("run")) {
+	        dependsOn shadowJarPrimer
+	    }
 	}
 }
 
@@ -80,13 +115,6 @@ sourceSets {
 			srcDir "../CustomPlayerModels-1.6/src/retro/resources"
 		}
 	}
-}
-
-configurations {
-    priority
-    sourceSets.main.compileClasspath = configurations.priority + sourceSets.main.compileClasspath
-    shade
-    implementation.extendsFrom shade
 }
 
 dependencies {
@@ -112,6 +140,7 @@ jar {
 }
 
 shadowJar {
+	dependsOn("remapFull")
 	configurations = [project.configurations.shade]
 	
 	relocate 'com.google', 'com.tom.cpm.externals.com.google'
@@ -121,6 +150,8 @@ shadowJar {
 	exclude 'META-INF/maven/**'
 	
 	classifier = ''
+	
+	from(files("${buildDir}/at"))
 }
 
 build.dependsOn(shadowJar)
@@ -151,27 +182,9 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'cpm.version'
     }
-    
-    from(files("${buildDir}/at"))
-    
-    duplicatesStrategy = "include"
 }
-//https://archive.org/details/minecraftcoderpack
-//https://ia801701.us.archive.org/view_archive.php?archive=/29/items/minecraftcoderpack/minecraftcoderpack.zip
-/*task downloadSRG(type: Copy) {
-    def zipUrl = 'https://archive.org/download/minecraftcoderpack/minecraftcoderpack.zip/minecraftcoderpack%2F1.6.4%2Fmcp811.zip'
-    def destinationDir = file("${buildDir}/extractedFiles")
-    destinationDir.mkdirs()
 
-    from(zipTree(zipUrl))
-    into(destinationDir)
-    include '** /*.srg'
-    include '** /*.csv'
-
-    println "Downloaded and extracted .srg files to: ${destinationDir}"
-}*/
-
-task remapAT {
+def remapAT_func() {
 	println "Loading remap data"
 	def srgFilesDir = "${buildDir}/extractedFiles"
     def mappingFD = [:]
@@ -524,21 +537,8 @@ task remapAT {
     file("${buildDir}/remap_fails.log").text = remapFails
 }
 
-//remapAT.dependsOn(downloadSRG)
-
-task copyArtifact(type: Copy, dependsOn: 'build') {
-    def artifactDir = file("${buildDir}/libs/$archivesBaseName-${version}.jar")
-    println "Artifact: ${artifactDir}"
-    def destinationDir = file("./run/") // Update this with your desired destination folder
-
-    // Copy the artifact to the destination directory
-    from artifactDir
-    into destinationDir
-
-    doLast {
-        println "Copied artifact to: ${destinationDir}"
-        delete artifactDir // Gradle dumb
-    }
+task remapAT {
+	remapAT_func()
 }
 
 //Disable remap and give a dummy jar to stop renaming things
@@ -546,3 +546,11 @@ tasks.named('remapJarForRelease').configure {
     enabled = false
     input = file("${buildDir}/of.jar")
 }
+
+task remapFull {
+	dependsOn("runObfDump")
+	doLast {
+		remapAT_func()
+	}
+}
+

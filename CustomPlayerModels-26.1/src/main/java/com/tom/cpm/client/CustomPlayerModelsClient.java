@@ -25,6 +25,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 
 import com.tom.cpl.tag.AllTagManagers;
+import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.common.Command;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
@@ -108,6 +109,8 @@ public class CustomPlayerModelsClient extends ClientBase {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(Minecraft.getInstance().isPaused());
 	}
 
 	@SubscribeEvent

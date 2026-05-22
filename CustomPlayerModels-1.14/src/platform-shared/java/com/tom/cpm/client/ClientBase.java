@@ -77,7 +77,7 @@ public class ClientBase {
 	}
 
 	public void playerRenderPost(PlayerModel model) {
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderHand(PlayerModel model) {
@@ -86,7 +86,7 @@ public class ClientBase {
 	}
 
 	public void renderHandPost(BipedModel model) {
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderSkull(Model skullModel, GameProfile profile) {

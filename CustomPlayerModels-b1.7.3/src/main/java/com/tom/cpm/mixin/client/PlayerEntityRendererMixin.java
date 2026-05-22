@@ -16,10 +16,10 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import com.tom.cpm.client.CustomPlayerModelsClient;
 import com.tom.cpm.client.RetroGL;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin extends LivingEntityRenderer {
@@ -40,7 +40,7 @@ public class PlayerEntityRendererMixin extends LivingEntityRenderer {
 
 	@Inject(at = @At(value = "RETURN"), method = "renderHand()V")
 	public void onHandPost(CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(bipedModel);
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(bipedModel);
 	}
 
 	@Inject(at = @At(value = "HEAD"), method = "render(Lnet/minecraft/entity/player/PlayerEntity;DDDFF)V")
@@ -55,11 +55,11 @@ public class PlayerEntityRendererMixin extends LivingEntityRenderer {
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/PlayerEntityRenderer;method_2027(Ljava/lang/String;Ljava/lang/String;)Z"), method = "method_827(Lnet/minecraft/entity/player/PlayerEntity;F)V")
 	public boolean onRenderCape(PlayerEntityRenderer r, String string, String string2, PlayerEntity player, float partialTicks) {
-		Player<?> pl = CustomPlayerModelsClient.INSTANCE.manager.getBoundPlayer();
+		BipedEntityModel model = bipedModel;
+		BoundPlayer pl = CustomPlayerModelsClient.INSTANCE.manager.getPlayerFromModel(model);
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
-				BipedEntityModel model = bipedModel;
 				CustomPlayerModelsClient.mc.getPlayerRenderManager().rebindModel(model);
 				CustomPlayerModelsClient.INSTANCE.manager.bindSkin(model, TextureSheetType.CAPE);
 				CustomPlayerModelsClient.renderCape(player, partialTicks, model, def);

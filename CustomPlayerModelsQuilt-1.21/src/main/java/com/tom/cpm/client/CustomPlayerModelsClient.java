@@ -4,15 +4,17 @@ import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 import org.quiltmc.qsl.command.api.client.ClientCommandRegistrationCallback;
 import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
-import org.quiltmc.qsl.screen.api.client.QuiltScreen;
 import org.quiltmc.qsl.screen.api.client.ScreenEvents;
 
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.options.SkinCustomizationScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
 
+import com.tom.cpl.tag.AllTagManagers;
 import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
@@ -28,6 +30,7 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 		CustomPlayerModels.LOG.info("Customizable Player Models Client Init started");
 		INSTANCE = this;
 		init0();
+		mc.setTags(new AllTagManagers(ResourceManagerHelper.get(PackType.CLIENT_RESOURCES), CPMTagLoaderFabric::new));
 		ClientTickEvents.START.register(cl -> {
 			if(!cl.isPaused())
 				mc.getPlayerRenderManager().getAnimationEngine().tick();
@@ -46,11 +49,13 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 			}
 
 			mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+			CustomPlayerModels.api.clientApi().tickListeners(minecraft.isPaused());
 		});
 		ScreenEvents.AFTER_INIT.register((screen, client, firstInit) -> {
 			if((screen instanceof TitleScreen && ModConfig.getCommonConfig().getSetBoolean(ConfigKeys.TITLE_SCREEN_BUTTON, true)) ||
 					screen instanceof SkinCustomizationScreen) {
-				((QuiltScreen)screen).getButtons().add(
+				screen.getButtons().add(
 						Button.builder(Component.translatable("button.cpm.open_editor"), b -> Minecraft.getInstance().setScreen(new GuiImpl(EditorGui::new, screen))).
 						bounds(0, 0, 100, 20).build());
 			}

@@ -32,6 +32,7 @@ import com.tom.cpl.math.Vec4f;
 import com.tom.cpl.render.VBuffers;
 import com.tom.cpm.client.MinecraftObject.DynTexture;
 import com.tom.cpm.client.optifine.OptifineTexture;
+import com.tom.cpm.client.vr.VRPlayerRenderer;
 import com.tom.cpm.shared.model.PlayerModelParts;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
@@ -63,8 +64,8 @@ public class PlayerRenderManager extends ModelRenderManager<Void, ModelTexture, 
 					return new RedirectHolderArmorChest(PlayerRenderManager.this, (PlayerModel) model);
 				} else if(model instanceof PlayerModel && "armor4".equals(arg)) {
 					return new RedirectHolderArmorFeet(PlayerRenderManager.this, (PlayerModel) model);
-					/*} else if(CustomPlayerModelsClient.vrLoaded && VRPlayerRenderer.isVRPlayer(model)) {
-					return VRPlayerRenderer.createVRPlayer(PlayerRenderManager.this, model);*/
+				} else if(CustomPlayerModelsClient.vrLoaded && VRPlayerRenderer.isVRPlayer(model)) {
+					return VRPlayerRenderer.createVRPlayer(PlayerRenderManager.this, model);
 				} else if(model instanceof PlayerModel) {
 					return new RedirectHolderPlayer(PlayerRenderManager.this, (PlayerModel) model);
 				} else if(model instanceof SkullModel) {

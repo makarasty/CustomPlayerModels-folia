@@ -6,7 +6,7 @@ import com.tom.cpm.shared.definition.ModelDefinition;
 public interface IAnimation {
 	int getDuration(AnimationMode mode);
 	int getPriority(AnimationMode mode);
-	void animate(long millis, ModelDefinition def, AnimationMode mode);
+	void animate(AnimationState state, long millis, ModelDefinition def, AnimationMode mode);
 
 	default void prepare(AnimationMode mode) {
 	}

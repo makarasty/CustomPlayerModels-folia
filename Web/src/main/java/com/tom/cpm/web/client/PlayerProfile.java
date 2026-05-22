@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.skin.PlayerTextureLoader;
@@ -52,7 +53,7 @@ public class PlayerProfile extends Player<Object> {
 	}
 
 	@Override
-	public void updateFromPlayer(Object player) {
+	public void updateFromPlayer(AnimationState animState, Object player) {
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class PlayerProfile extends Player<Object> {
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 	}
 
 	public static class PlayerInfo {

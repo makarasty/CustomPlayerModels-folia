@@ -15,7 +15,6 @@ import net.minecraft.util.Util;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -30,10 +29,12 @@ import com.tom.cpl.block.entity.ActiveEffect;
 import com.tom.cpl.math.MathHelper;
 import com.tom.cpl.util.Hand;
 import com.tom.cpl.util.HandAnimation;
+import com.tom.cpm.client.vr.VRPlayerRenderer;
 import com.tom.cpm.common.EntityTypeHandlerImpl;
 import com.tom.cpm.common.PlayerInventory;
 import com.tom.cpm.common.WorldImpl;
 import com.tom.cpm.mixinplugin.FPMDetector;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -112,7 +113,7 @@ public class PlayerProfile extends Player<Avatar> {
 	}
 
 	@Override
-	public void updateFromPlayer(Avatar player) {
+	public void updateFromPlayer(AnimationState animState, Avatar player) {
 		Pose p = player.getPose();
 		animState.resetPlayer();
 		switch (p) {
@@ -135,7 +136,7 @@ public class PlayerProfile extends Player<Avatar> {
 		if(Platform.isSitting(player))animState.riding = true;
 		if(player.isSprinting())animState.sprinting = true;
 		if(player.isUsingItem()) {
-			animState.usingAnimation = HandAnimation.of(player.getUseItem().getUseAnimation());
+			animState.usingAnimation = HandAnimation.map(player.getUseItem().getUseAnimation());
 		}
 		if(player.isInWater())animState.retroSwimming = true;
 		animState.moveAmountX = (float) (player.getX() - player.xo);
@@ -145,12 +146,7 @@ public class PlayerProfile extends Player<Avatar> {
 		animState.pitch = player.getXRot();
 		animState.bodyYaw = player.yBodyRot;
 
-		if(player.isModelPartShown(PlayerModelPart.HAT))animState.encodedState |= 1;
-		if(player.isModelPartShown(PlayerModelPart.JACKET))animState.encodedState |= 2;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG))animState.encodedState |= 4;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG))animState.encodedState |= 8;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE))animState.encodedState |= 16;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE))animState.encodedState |= 32;
+		animState.encodedState = MinecraftObject.LAYER_CODEC.getValue(player::isModelPartShown);
 
 		ItemStack is = player.getItemBySlot(EquipmentSlot.HEAD);
 		animState.hasSkullOnHead = is.getItem() instanceof BlockItem && ((BlockItem)is.getItem()).getBlock() instanceof AbstractSkullBlock;
@@ -192,16 +188,16 @@ public class PlayerProfile extends Player<Avatar> {
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof PlayerModel) {
-			/*if(CustomPlayerModelsClient.vrLoaded)
+			if(CustomPlayerModelsClient.vrLoaded)
 				animState.vrState = VRPlayerRenderer.getVRState(animState.animationMode, model);
-			else*/
-			animState.vrState = null;
+			else
+				animState.vrState = null;
 		}
 	}
 
-	public void updateFromState(AvatarRenderState state) {
+	public void updateFromState(AnimationState animState, AvatarRenderState state) {
 		animState.resetModel();
 		animState.attackTime = state.attackTime;
 		animState.swimAmount = state.swimAmount;

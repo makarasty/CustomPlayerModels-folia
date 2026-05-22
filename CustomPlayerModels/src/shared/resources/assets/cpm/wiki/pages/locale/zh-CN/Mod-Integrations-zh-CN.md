@@ -1,5 +1,5 @@
 整合动画：
-- [比例](https://github.com/tom5454/CustomPlayerModels/wiki/Scaling-zh-CN)
+- [缩放](https://github.com/tom5454/CustomPlayerModels/wiki/Scaling-zh-CN)
 - [语音动画](#voice-animations)
 - [第一人称视角](#first-person-view)
 - [VR动画](#vr-animations)

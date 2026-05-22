@@ -48,6 +48,7 @@ sourceSets {
 				exclude "com/tom/cpl/gui/elements/ProcessPopup.java"
 				exclude "com/tom/cpl/config/ModConfigFile.java"
 				exclude "com/tom/cpl/command/BrigadierCommandHandler.java"
+				exclude "com/tom/cpl/command/BrigadierCommandHandlerBase.java"
 				exclude "com/tom/cpm/api/ClientApi.java"
 				exclude "com/tom/cpm/api/CommonApi.java"
 				exclude "com/tom/cpm/externals/org/apache/commons/math3/PolynomialFunction.java"

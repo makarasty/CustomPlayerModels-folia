@@ -19,6 +19,7 @@ import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -29,6 +30,8 @@ import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import com.tom.cpl.tag.AllTagManagers;
+import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.common.Command;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
@@ -41,12 +44,13 @@ import com.tom.cpm.shared.util.Log;
 public class CustomPlayerModelsClient extends ClientBase {
 	public static final CustomPlayerModelsClient INSTANCE = new CustomPlayerModelsClient();
 
-	public static void preInit() {
+	public void preInit() {
+		init0();
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(KeyBindings::init);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(INSTANCE::registerReloadListeners);
 	}
 
 	public void init() {
-		init0();
 		NeoForge.EVENT_BUS.register(this);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerShaders0);
 		init1();
@@ -105,6 +109,8 @@ public class CustomPlayerModelsClient extends ClientBase {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(minecraft.isPaused());
 	}
 
 	@SubscribeEvent
@@ -144,5 +150,9 @@ public class CustomPlayerModelsClient extends ClientBase {
 	@SubscribeEvent
 	public void registerClientCommands(RegisterClientCommandsEvent event) {
 		new Command(event.getDispatcher(), true);
+	}
+
+	private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
+		mc.setTags(new AllTagManagers(l -> event.registerReloadListener(l), CPMTagLoader::new));
 	}
 }

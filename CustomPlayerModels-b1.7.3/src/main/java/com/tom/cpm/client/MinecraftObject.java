@@ -29,6 +29,7 @@ import com.tom.cpm.retro.GameProfileManager;
 import com.tom.cpm.retro.MCExecutor;
 import com.tom.cpm.shared.MinecraftClientAccess;
 import com.tom.cpm.shared.MinecraftObjectHolder;
+import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinitionLoader;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.network.NetHandler;
@@ -110,6 +111,14 @@ public class MinecraftObject implements MinecraftClientAccess {
 	@Override
 	public SkinType getSkinType() {
 		return SkinType.DEFAULT;
+	}
+
+	@Override
+	public int getEncodedGesture() {
+		Player<?> pl = getCurrentClientPlayer();
+		if (pl == null)return 0;
+		PlayerProfile player = (PlayerProfile) pl;
+		return player.encGesture;
 	}
 
 	@Override

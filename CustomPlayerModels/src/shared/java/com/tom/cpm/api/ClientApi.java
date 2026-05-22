@@ -30,6 +30,7 @@ import com.tom.cpm.shared.io.ModelFile;
 import com.tom.cpm.shared.model.TextureSheetType;
 import com.tom.cpm.shared.model.render.ModelRenderManager;
 import com.tom.cpm.shared.parts.anim.menu.CommandAction;
+import com.tom.cpm.shared.util.EventHandler;
 
 public class ClientApi extends SharedApi implements IClientAPI {
 	private List<ToFloatFunction<Object>> voice = new ArrayList<>();
@@ -38,6 +39,11 @@ public class ClientApi extends SharedApi implements IClientAPI {
 	private BiFunction<UUID, String, ?> gameProfileFactory;
 	private Function<Object, UUID> getPlayerUUID;
 	private Map<String, BiConsumer<Object, NBTTagCompound>> pluginMessageHandlers = new HashMap<>();
+	private EventHandler<TickEventHandler> tickEvent = new EventHandler<>(TickEventHandler.class, (listeners) -> (isGamePaused) -> {
+		for (TickEventHandler event : listeners) {
+			event.onTick(isGamePaused);
+		}
+	});
 
 	@Override
 	protected void callInit0(ICPMPlugin plugin) {
@@ -166,8 +172,8 @@ public class ClientApi extends SharedApi implements IClientAPI {
 			if(profile == null)return;
 			def = profile.getModelDefinition();
 			if(def != null) {
-				profile.animState = animState;
 				animState.encodedState = 0;
+				animState.animationMode = renderMode;
 				CustomPose pose = def.getAnimations().getCustomPoses().get(activePose);
 				//TODO reimplement
 				/*Gesture gesture = def.getAnimations().getGestures().get(activeGesture);
@@ -175,13 +181,13 @@ public class ClientApi extends SharedApi implements IClientAPI {
 					animState.encodedState = def.getAnimations().getEncoded(gesture);
 				}*/
 				if(pose != null) {
-					profile.currentPose = pose;
+					profile.persistentState.currentPose = pose;
 				} else {
-					profile.prevPose = null;
+					profile.persistentState.prevPose = null;
 				}
 				def.itemTransforms.clear();
-				mngr.bindModel(model, "api", buffers, def, profile, renderMode);
-				mngr.getAnimationEngine().prepareAnimations(profile, renderMode, def);
+				mngr.bindModel(model, "api", buffers, def, profile, animState);
+				mngr.getAnimationEngine().prepareAnimations(profile.persistentState, animState, def);
 				if(setupTexture) {
 					TextureHandler<RL, RT> tex = ((TextureHandlerFactory<RL, RT>) textureHandlerFactory).apply(null, renderTypeFactory);
 					((ModelRenderManager<MBS, TextureHandler<RL, RT>, ?, M>)mngr).bindSkin(model, tex, TextureSheetType.SKIN);
@@ -282,6 +288,10 @@ public class ClientApi extends SharedApi implements IClientAPI {
 		return voiceMuted;
 	}
 
+	public void tickListeners(boolean isPaused) {
+		tickEvent.invoker().onTick(isPaused);
+	}
+
 	@Override
 	public <HM, RL, RT, MBS, GP> PlayerRenderer<HM, RL, RT, MBS, GP> createPlayerRenderer(Class<HM> humanoidModelClass,
 			Class<RL> resourceLocationClass, Class<RT> renderTypeClass, Class<MBS> multiBufferSourceClass, Class<GP> gameProfileClass) {
@@ -359,7 +369,7 @@ public class ClientApi extends SharedApi implements IClientAPI {
 			if (act != null)return act.getValue();
 			return -1;
 		}
-		return pl.currentPose == pose ? 1 : 0;
+		return pl.persistentState.currentPose == pose ? 1 : 0;
 	}
 
 	@Override
@@ -415,5 +425,10 @@ public class ClientApi extends SharedApi implements IClientAPI {
 		String fullID = initingPlugin.getOwnerModId() + ":" + messageId;
 		pluginMessageHandlers.put(fullID, (a, b) -> handler.accept(getPlayerUUID.apply(a), b));
 		return sendPluginMsg(fullID, 2);
+	}
+
+	@Override
+	public void registerClientGameTick(TickEventHandler onTick) {
+		tickEvent.register(onTick);
 	}
 }

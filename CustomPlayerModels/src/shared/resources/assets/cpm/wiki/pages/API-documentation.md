@@ -55,6 +55,11 @@ API version: ![API version badge](https://img.shields.io/maven-metadata/v?color=
 
 | Minecraft Version ID (Actual MC Version) | Runtime version (Forge) | Runtime version (NeoForge) | Runtime version (Fabric) | Runtime version (Quilt) |
 | ----------------- | ----------------------- | -------------------------- | ------------------------ | ----------------------- |
+| 26.1 | ![26.1 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-26.1%2Fmaven-metadata.xml) | ![26.1 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-26.1%2Fmaven-metadata.xml) | ![26.1 Fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-26.1%2Fmaven-metadata.xml) | - |
+| 1.21.11 | ![1.21.11 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21.11%2Fmaven-metadata.xml) | ![1.21.11 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21.11%2Fmaven-metadata.xml) | ![1.21.11 Fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21.11%2Fmaven-metadata.xml) | - |
+| 1.21.10 | ![1.21.10 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21.10%2Fmaven-metadata.xml) | ![1.21.10 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21.10%2Fmaven-metadata.xml) | ![1.21.10 Fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21.10%2Fmaven-metadata.xml) | - |
+| 1.21.8 | ![1.21.8 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21.8%2Fmaven-metadata.xml) | ![1.21.8 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21.8%2Fmaven-metadata.xml) | ![1.21.8 Fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21.8%2Fmaven-metadata.xml) | - |
+| 1.21.5 | ![1.21.5 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21.5%2Fmaven-metadata.xml) | ![1.21.5 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21.5%2Fmaven-metadata.xml) | ![1.21.5 Fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21.5%2Fmaven-metadata.xml) | - |
 | 1.21.4 | ![1.21.4 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21.4%2Fmaven-metadata.xml) | ![1.21.4 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21.4%2Fmaven-metadata.xml) | ![1.21.4 fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21.4%2Fmaven-metadata.xml) | - |
 | 1.21.3 | ![1.21.3 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21.3%2Fmaven-metadata.xml) | ![1.21.3 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21.3%2Fmaven-metadata.xml) | ![1.21.3 fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21.3%2Fmaven-metadata.xml) | - |
 | 1.21, (1.21.1) | ![1.21 forge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModelsLexForge-1.21%2Fmaven-metadata.xml) | ![1.21 neoforge version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-1.21%2Fmaven-metadata.xml) | ![1.21 fabric version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Fabric-1.21%2Fmaven-metadata.xml) | ![1.21 quilt version badge](https://img.shields.io/maven-metadata/v?color=forestgreen&label=release&metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Ftom5454%2Fmaven%2Fmain%2Fcom%2Ftom5454%2Fcpm%2FCustomPlayerModels-Quilt-1.21%2Fmaven-metadata.xml) |
@@ -215,6 +220,13 @@ public class CPMCompat implements ICPMPlugin {
 
 ### Forge 1.2.5
 The plugin loader isn't implemented yet.
+
+
+<a name="forge-and-neo"/>
+
+### Forge and NeoForge (0.6.26+)
+Annotate your plugin class with `@CPMPlugin`.  
+This removes the need for the IMC message requirement, allowing multi-loader, multi-version plugins to be made.  
 
 
 <a name="forge-112-and-lower"/>
@@ -468,6 +480,16 @@ The last state message is stored on the server and sent to every client that ent
 [Player.class](#client-playerclass)  
 or UUID version:  
 `MessageSender sender = IClientAPI.registerPluginMessage(message_id, (player_uuid, message) -> {/*Handle message*/});`  
+
+
+<a name="tick-listener"/>
+
+#### Game Tick Listener
+A `TickEventHandler` can be registered to receive game tick events, bypassing the need to use to the loader specific apis.  
+Called after CPM ticks on the client.  
+Useful for integration mods that play custom animations (like OSC).  
+`IClientApi.registerClientGameTick((paused) -> {...});`  
+The listener will fire even when the game is paused, indicated by the parameter.
 
 
 <a name="class-map"/>

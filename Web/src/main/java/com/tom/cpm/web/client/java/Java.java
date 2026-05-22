@@ -33,27 +33,27 @@ public class Java {
 	private static SimpleDateFormat minute = new SimpleDateFormat("mm");
 	private static SimpleDateFormat second = new SimpleDateFormat("ss");
 	private static final JsRegExp formatRegex = new JsRegExp("%(?:(\\d)+\\$)?([-#+ 0,(]+)?(\\d+)?(?:\\.(\\d)+)?([bBhHsScCoxXeEfgGaAn%]|[tT][HIklMSLNpzZsQBbhAaCYyjmdeRTrDTc])", "g");
-	private static final JsRegExp replaceRegex = new JsRegExp("\\${(.*?)}", "g");
 
 	public static String format(final String format, final Object... args) {
 		int[] inc = new int[1];
-		return doFormat(format, (argIn, flags, width, prec, mode) -> {
+		StringEx str = Js.uncheckedCast(format);
+		return str.replace(formatRegex, (__, argIn, flags, width, prec, mode) -> {
 			if(mode.equals("%"))return "%";
-			int arg = argIn.isEmpty() ? inc[0] : (Integer.parseInt(argIn) - 1);
+			int arg = argIn == null || argIn.isEmpty() ? inc[0] : (Integer.parseInt(argIn) - 1);
 			inc[0]++;
 			switch (mode) {
 			case "s":
 				return String.valueOf(args[arg]);
 
 			case "f":
-				if(!prec.isEmpty())
+				if(prec != null && !prec.isEmpty())
 					return fixed(((Number)args[arg]).floatValue(), Integer.parseInt(prec));
 				return String.valueOf(args[arg]);
 
 			case "X":
 			{
 				JsString s = Js.uncheckedCast(new JsNumber(((Number)args[arg]).intValue()).toString(16));
-				return s.padStart(width.isEmpty() ? 0 : Integer.parseInt(width), "0");
+				return s.padStart(width == null || width.isEmpty() ? 0 : Integer.parseInt(width), "0");
 			}
 
 			case "tY":
@@ -80,15 +80,6 @@ public class Java {
 		});
 	}
 
-	private static String doFormat(String format, FormatCallback cb) {
-		JsString str = Js.uncheckedCast(format);
-		StringEx stre = Js.uncheckedCast(str.replace(formatRegex, "$${$1:$2:$3:$4:$5}"));
-		return stre.replace(replaceRegex, (x, fmt) -> {
-			String[] sp = fmt.toString().split(":");
-			return cb.exec(sp[0], sp[1], sp[2], sp[3], sp[4]);
-		});
-	}
-
 	@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "String")
 	public static class StringEx {
 		public native String replace(JsRegExp replaceregex, ReplaceCallback object);
@@ -96,11 +87,7 @@ public class Java {
 
 	@JsFunction
 	public interface ReplaceCallback {
-		String getReplacement(String fullText, String capture);
-	}
-
-	public interface FormatCallback {
-		String exec(String arg, String flags, String width, String prec, String mode);
+		String getReplacement(String match, String arg, String flags, String width, String prec, String mode);
 	}
 
 	public static String fixed(float n, int w) {

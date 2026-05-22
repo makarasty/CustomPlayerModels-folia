@@ -90,7 +90,7 @@ public class CustomPlayerModelsClient implements ClientModInitializer, SidedHand
 	public void playerRenderPost(PlayerEntityRenderer renderer) {
 		manager.unbind(renderer.field_296);
 		manager.unbind(renderer.field_295);
-		manager.unbindClear(renderer.bipedModel);
+		manager.unbindFlush(renderer.bipedModel);
 	}
 
 	public void clientTickStart() {
@@ -118,6 +118,8 @@ public class CustomPlayerModelsClient implements ClientModInitializer, SidedHand
 
 			mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
 		}
+
+		CustomPlayerModels.api.clientApi().tickListeners(minecraft.paused);
 	}
 
 	public boolean onRenderName(LivingEntityRenderer renderer, LivingEntity entity, double xIn, double yIn, double zIn) {

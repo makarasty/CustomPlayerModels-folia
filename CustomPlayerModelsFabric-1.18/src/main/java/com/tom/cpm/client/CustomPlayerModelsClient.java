@@ -4,11 +4,14 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.SkinCustomizationScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.packs.PackType;
 
+import com.tom.cpl.tag.AllTagManagers;
 import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
@@ -24,6 +27,7 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 		CustomPlayerModels.LOG.info("Customizable Player Models Client Init started");
 		INSTANCE = this;
 		init0();
+		mc.setTags(new AllTagManagers(ResourceManagerHelper.get(PackType.CLIENT_RESOURCES), CPMTagLoaderFabric::new));
 		ClientTickEvents.START_CLIENT_TICK.register(cl -> {
 			if(!cl.isPaused())
 				mc.getPlayerRenderManager().getAnimationEngine().tick();
@@ -42,6 +46,8 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 			}
 
 			mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+			CustomPlayerModels.api.clientApi().tickListeners(minecraft.isPaused());
 		});
 		ScreenEvents.AFTER_INIT.register((mc, screen, sw, sh) -> {
 			ScreenEvents.beforeRender(screen).register((_1, _2, _3, _4, _5) -> PlayerProfile.inGui = true);

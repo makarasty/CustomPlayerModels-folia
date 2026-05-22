@@ -13,7 +13,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -32,6 +31,8 @@ import com.tom.cpm.common.EntityTypeHandlerImpl;
 import com.tom.cpm.common.PlayerInventory;
 import com.tom.cpm.common.WorldImpl;
 import com.tom.cpm.mixinplugin.FPMDetector;
+import com.tom.cpm.mixinplugin.RCDetector;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -40,12 +41,20 @@ import com.tom.cpm.shared.skin.TextureType;
 
 public class PlayerProfile extends Player<net.minecraft.world.entity.player.Player> {
 	public static boolean inGui;
-	public static BooleanSupplier inFirstPerson;
+	private static BooleanSupplier inFirstPerson;
 	static {
 		inFirstPerson = () -> false;
 		if (FPMDetector.doApply()) {
 			FirstPersonDetector.init();
 		}
+		if (RCDetector.doApply()) {
+			RealCameraDetector.init();
+		}
+	}
+
+	public static void addInFirstPerson(BooleanSupplier inFirstPerson) {
+		BooleanSupplier old = PlayerProfile.inFirstPerson;
+		PlayerProfile.inFirstPerson = () -> inFirstPerson.getAsBoolean() || old.getAsBoolean();
 	}
 
 	private final GameProfile profile;
@@ -103,7 +112,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 	}
 
 	@Override
-	public void updateFromPlayer(net.minecraft.world.entity.player.Player player) {
+	public void updateFromPlayer(AnimationState animState, net.minecraft.world.entity.player.Player player) {
 		Pose p = player.getPose();
 		animState.resetPlayer();
 		switch (p) {
@@ -136,12 +145,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 		animState.pitch = player.getXRot();
 		animState.bodyYaw = player.yBodyRot;
 
-		if(player.isModelPartShown(PlayerModelPart.HAT))animState.encodedState |= 1;
-		if(player.isModelPartShown(PlayerModelPart.JACKET))animState.encodedState |= 2;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG))animState.encodedState |= 4;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG))animState.encodedState |= 8;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE))animState.encodedState |= 16;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE))animState.encodedState |= 32;
+		animState.encodedState = MinecraftObject.LAYER_CODEC.getValue(player::isModelPartShown);
 
 		ItemStack is = player.getItemBySlot(EquipmentSlot.HEAD);
 		animState.hasSkullOnHead = is.getItem() instanceof BlockItem && ((BlockItem)is.getItem()).getBlock() instanceof AbstractSkullBlock;
@@ -182,7 +186,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof PlayerModel) {
 			if(CustomPlayerModelsClient.vrLoaded)
 				animState.vrState = VRPlayerRenderer.getVRState(animState.animationMode, model);
@@ -191,7 +195,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 		}
 	}
 
-	public void updateFromState(PlayerModel model, PlayerRenderState state) {
+	public void updateFromState(AnimationState animState, PlayerModel model, PlayerRenderState state) {
 		animState.resetModel();
 		animState.attackTime = state.attackTime;
 		animState.swimAmount = state.swimAmount;

@@ -77,13 +77,13 @@ public abstract class ClientBase {
 	}
 
 	public void playerRenderPre(PlayerRenderStateAccess sa, PlayerModel model, AvatarRenderState renderState) {
-		CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), null, model, null);
+		CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), null, model, null, sa.cpm$getAnimationState());
 		model.setupAnim(renderState);
 		mc.getPlayerRenderManager().setModelPose(model);
 	}
 
 	public void playerRenderPost(PlayerModel model) {
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderHand(PlayerModel model) {
@@ -95,7 +95,7 @@ public abstract class ClientBase {
 	}
 
 	public void renderHandPost(HumanoidModel model) {
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderElytra(HumanoidModel<HumanoidRenderState> player, ElytraModel model) {

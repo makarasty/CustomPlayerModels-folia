@@ -181,8 +181,14 @@ public class PlayerModelSetup {
 			player.leftArm.xRot = MathHelper.clamp(player.head.xRot, -1.2F, 1.2F) - 1.4835298F;
 			player.leftArm.yRot = player.head.yRot + ((float)Math.PI / 6F);
 			break;
+		case BRUSH:
+			player.leftArm.xRot = player.leftArm.xRot * 0.5F - (float) (Math.PI / 5);
+			player.leftArm.yRot = 0.0F;
+			break;
+		case SPEAR:
+			animateSpear(player.leftArm, player.head, false);
+			break;
 		}
-
 	}
 
 	private static void poseRightArm(VanillaPlayerModel player) {
@@ -222,8 +228,14 @@ public class PlayerModelSetup {
 			player.rightArm.xRot = MathHelper.clamp(player.head.xRot, -1.2F, 1.2F) - 1.4835298F;
 			player.rightArm.yRot = player.head.yRot - ((float)Math.PI / 6F);
 			break;
+		case BRUSH:
+			player.rightArm.xRot = player.rightArm.xRot * 0.5F - (float) (Math.PI / 5);
+			player.rightArm.yRot = 0.0F;
+			break;
+		case SPEAR:
+			animateSpear(player.rightArm, player.head, true);
+			break;
 		}
-
 	}
 
 	private static void setupAttackAnimation(VanillaPlayerModel player, Hand handside) {
@@ -273,6 +285,15 @@ public class PlayerModelSetup {
 		modelpart1.xRot = MathHelper.lerp(chargeValue, modelpart1.xRot, (-(float)Math.PI / 2F));
 	}
 
+	public static void animateSpear(VanillaPartRenderer arm, VanillaPartRenderer head, boolean isRight) {
+		int i = isRight ? 1 : -1;
+		arm.yRot = -0.1F * i + head.yRot;
+		arm.xRot = (float) (-Math.PI / 2) + head.xRot + 0.8F;
+
+		arm.yRot = (float) (Math.PI / 180.0) * MathHelper.clamp((180.0F / (float)Math.PI) * arm.yRot, -60.0F, 60.0F);
+		arm.xRot = (float) (Math.PI / 180.0) * MathHelper.clamp((180.0F / (float)Math.PI) * arm.xRot, -120.0F, 30.0F);
+	}
+
 	private static VanillaPartRenderer getArmForSide(VanillaPlayerModel player, Hand side) {
 		return side == Hand.LEFT ? player.leftArm : player.rightArm;
 	}
@@ -286,20 +307,27 @@ public class PlayerModelSetup {
 		ITEM(false),
 		BLOCK(false),
 		BOW_AND_ARROW(true),
-		THROW_SPEAR(false),
+		THROW_SPEAR(false, "THROW_TRIDENT"),
 		CROSSBOW_CHARGE(true),
 		CROSSBOW_HOLD(true),
 		SPYGLASS(false),
 		TOOT_HORN(false),
 		BRUSH(false),
+		SPEAR(false),
 		;
 
 		public static final ArmPose[] VALUES = values();
 
 		private final boolean twoHanded;
+		private final String altName;
 
-		private ArmPose(boolean p_i241257_3_) {
-			this.twoHanded = p_i241257_3_;
+		private ArmPose(boolean twoHanded) {
+			this(twoHanded, null);
+		}
+
+		private ArmPose(boolean twoHanded, String altName) {
+			this.twoHanded = twoHanded;
+			this.altName = altName;
 		}
 
 		public boolean isTwoHanded() {
@@ -310,6 +338,8 @@ public class PlayerModelSetup {
 			for (int i = 0; i < VALUES.length; i++) {
 				ArmPose armPose = VALUES[i];
 				if(armPose.name().equals(value.name()))
+					return armPose;
+				if (armPose.altName != null && armPose.altName.equals(value.name()))
 					return armPose;
 			}
 			return EMPTY;

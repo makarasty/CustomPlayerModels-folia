@@ -29,6 +29,7 @@ import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.tom.cpl.tag.AllTagManagers;
+import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.client.GuiGraphicsExtractorEx.RegistrationHandler;
 import com.tom.cpm.common.Command;
 import com.tom.cpm.shared.config.ConfigKeys;
@@ -112,6 +113,8 @@ public class CustomPlayerModelsClient extends ClientBase {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(Minecraft.getInstance().isPaused());
 	}
 
 	@SubscribeEvent

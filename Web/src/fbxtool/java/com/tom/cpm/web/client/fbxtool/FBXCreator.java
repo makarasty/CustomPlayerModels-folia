@@ -14,6 +14,7 @@ import com.tom.cpl.render.VertexBuffer;
 import com.tom.cpl.util.Hand;
 import com.tom.cpl.util.Image;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.definition.ModelDefinitionLoader;
 import com.tom.cpm.shared.model.TextureSheetType;
 import com.tom.cpm.shared.model.builtin.VanillaPlayerModel;
@@ -84,7 +85,7 @@ public class FBXCreator {
 		p.rightArm.zRot = (float) Math.toRadians(90);
 		p.leftArm.zRot = (float) Math.toRadians(-90);
 		VBuffers buf = new VBuffers(r -> buffer.getBuffer(r.getNativeType()));
-		renderer.setupSkin(this, p, buf, def, AnimationMode.PLAYER);
+		renderer.setupSkin(this, p, buf, def, new AnimationState(AnimationMode.PLAYER));
 		VertexBuffer b = buf.getBuffer(types, RenderMode.DEFAULT);
 		buffer.getBone().name = "Root";
 		if(humanoidRig) {

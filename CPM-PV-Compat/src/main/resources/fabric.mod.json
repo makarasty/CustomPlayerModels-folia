@@ -17,18 +17,14 @@
   "entrypoints": {
     "cpmapi": [
       "com.tom.cpmpvc.CPMPVPlugin"
-    ],
-    "client": [
-      "com.tom.cpmpvc.CPMPVModFabric"
     ]
   },
   "mixins": [
-	  "cpmpv.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-	"plasmovoice": ">=2.0.0",
-	"cpm": "*"
+	"plasmovoice": ">=2.1.1",
+	"cpm": ">=0.6.26a"
   }
 }

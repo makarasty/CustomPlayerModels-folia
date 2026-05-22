@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import com.tom.cpl.math.Vec3f;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.animation.AnimationType;
 import com.tom.cpm.shared.animation.CustomPose;
 import com.tom.cpm.shared.animation.IAnimation;
@@ -126,7 +127,7 @@ public class EditorAnim implements IAnimation {
 	}
 
 	@Override
-	public void animate(long millis, ModelDefinition def, AnimationMode mode) {
+	public void animate(AnimationState state, long millis, ModelDefinition def, AnimationMode mode) {
 		if(components == null || psfs == null)calculateSplines();
 		float step;
 		boolean remap = false;

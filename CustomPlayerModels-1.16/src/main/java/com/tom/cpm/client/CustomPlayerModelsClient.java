@@ -3,6 +3,7 @@ package com.tom.cpm.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.CustomizeSkinScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -19,6 +20,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 
+import com.tom.cpl.tag.AllTagManagers;
+import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
 import com.tom.cpm.shared.config.Player;
@@ -84,6 +87,8 @@ public class CustomPlayerModelsClient extends ClientBase {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(minecraft.isPaused());
 	}
 
 	@SubscribeEvent
@@ -118,5 +123,10 @@ public class CustomPlayerModelsClient extends ClientBase {
 	@SubscribeEvent
 	public void onLogout(ClientPlayerNetworkEvent.LoggedOutEvent evt) {
 		mc.onLogOut();
+	}
+
+	public void registerReloadListeners() {
+		IReloadableResourceManager mngr = (IReloadableResourceManager) Minecraft.getInstance().getResourceManager();
+		mc.setTags(new AllTagManagers(l -> l.initAndRegister(mngr), CPMTagLoader::new));
 	}
 }

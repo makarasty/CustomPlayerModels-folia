@@ -784,6 +784,7 @@ public class BlockbenchExport {
 
 				if(pos != null) {
 					Vec3f v = pos.toVecF();
+					v.x *= -1;
 					v.y *= -1;
 					if(!ea.add)v = v.add(addPos);
 					dt.setPos(v);

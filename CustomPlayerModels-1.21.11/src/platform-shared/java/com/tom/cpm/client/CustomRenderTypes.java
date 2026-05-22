@@ -44,7 +44,7 @@ public class CustomRenderTypes {
 
 	private static final RenderType LINES_NO_DEPTH = RenderType.create("cpm:lines_no_depth",
 			RenderSetup.builder(LINES.get()).setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-			.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET).createRenderSetup());
+			.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET).sortOnUpload().createRenderSetup());
 
 	private static final Function<Identifier, RenderType> GLOWING_EYES = Util.memoize(identifier -> {
 		final RenderSetup renderSetup9 = RenderSetup.builder(EYES.get())

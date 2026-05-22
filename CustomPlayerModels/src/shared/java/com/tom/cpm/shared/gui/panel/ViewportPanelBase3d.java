@@ -19,6 +19,7 @@ import com.tom.cpl.render.VertexBuffer;
 import com.tom.cpl.util.Hand;
 import com.tom.cpl.util.ItemSlot;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
 import com.tom.cpm.shared.definition.ModelDefinition;
@@ -71,6 +72,10 @@ public abstract class ViewportPanelBase3d extends Panel3d {
 			new ItemRenderTransform(new Vec3f(0, 4, 0), new Vec3f(0, 0,  45), new Vec3f(0.9F, 0.9F, 0.9F)),
 			new ItemRenderTransform(new Vec3f(0, 4, 0), new Vec3f(0, 0, -45), new Vec3f(0.9F, 0.9F, 0.9F))
 	};
+	protected static final ItemRenderTransform[] spearTransform = new ItemRenderTransform[] {
+			new ItemRenderTransform(new Vec3f(0, 2, 2), new Vec3f(5,  270, -50), new Vec3f(1.7F, 1.7F, 0.85F)),
+			new ItemRenderTransform(new Vec3f(0, 2, 2), new Vec3f(5, -270,  50), new Vec3f(1.7F, 1.7F, 0.85F))
+	};
 	protected static final ItemModel sword = new ItemModel("sword", swordTransform);
 	protected static final ItemModel food = new ItemModel("food", itemTransform);
 	protected static final IItemModel[] bow = new IItemModel[] {
@@ -87,6 +92,7 @@ public abstract class ViewportPanelBase3d extends Panel3d {
 	protected static final SpyglassModel spyglass = new SpyglassModel();
 	protected static final ItemModel goatHorn = new ItemModel("goat_horn", goatHornTransform);
 	protected static final ItemModel brush = new ItemModel("brush", brushTransform);
+	protected static final ItemModel spear = new ItemModel("spear", spearTransform);
 	protected static final EnumMap<DisplayItem, IItemModel[]> itemModels = new EnumMap<>(DisplayItem.class);
 
 	static {
@@ -101,16 +107,19 @@ public abstract class ViewportPanelBase3d extends Panel3d {
 		itemModels.put(DisplayItem.SPYGLASS, new IItemModel[] {spyglass});
 		itemModels.put(DisplayItem.GOAT_HORN, new IItemModel[] {goatHorn});
 		itemModels.put(DisplayItem.BRUSH, new IItemModel[] {brush});
+		itemModels.put(DisplayItem.SPEAR, new IItemModel[] {spear});
 	}
 
 	protected int mx, my;
 	protected boolean enableDrag;
 	protected boolean dragMode;
 	protected int paintColor;
+	protected AnimationState animationState;
 
 	public ViewportPanelBase3d(Frame frm) {
 		super(frm);
 		setBackgroundColor(gui.getColors().popup_background);
+		animationState = new AnimationState(AnimationMode.PLAYER);
 	}
 
 	public void renderModel(MatrixStack stack, VBuffers buf, float partialTicks) {
@@ -127,7 +136,7 @@ public abstract class ViewportPanelBase3d extends Panel3d {
 
 		preRender(stack, rp);
 
-		manager.setupSkin(this, p, rp, def, getAnimMode());
+		manager.setupSkin(this, p, rp, def, animationState);
 
 		poseModel(p, stack, partialTicks);
 
@@ -178,7 +187,7 @@ public abstract class ViewportPanelBase3d extends Panel3d {
 
 		for(PlayerModelLayer l : PlayerModelLayer.VALUES) {
 			if(layers.contains(l)) {
-				manager.setupLayer(this, l, p, rp, def, getAnimMode());
+				manager.setupLayer(this, l, p, rp, def, animationState);
 				p.renderLayer(stack, rp.getBuffer(types, RenderMode.DEFAULT), l);
 				manager.unbindModel(p);
 			}
@@ -270,7 +279,6 @@ public abstract class ViewportPanelBase3d extends Panel3d {
 	protected abstract void preRender(MatrixStack stack, VBuffers buf);
 	protected void postRender(MatrixStack stack, VBuffers buf) {}
 	protected abstract ModelDefinition getDefinition();
-	protected AnimationMode getAnimMode() {return AnimationMode.PLAYER;}
 	protected Set<PlayerModelLayer> getArmorLayers() {return Collections.emptySet();}
 	public DisplayItem getHeldItem(ItemSlot hand) {return DisplayItem.NONE;}
 	protected int drawParrots() {return 0;}

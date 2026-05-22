@@ -25,8 +25,8 @@ public class TextureProvider {
 		size = in.read2s();
 		ImageBlock block = in.readImage();
 		if(def != null) {
-			ConfigKeys.MAX_TEX_SHEET_SIZE.checkFor(def.getPlayerObj(), block.getWidth(), BlockReason.TEXTURE_OVERFLOW);
-			ConfigKeys.MAX_TEX_SHEET_SIZE.checkFor(def.getPlayerObj(), block.getHeight(), BlockReason.TEXTURE_OVERFLOW);
+			def.check(ConfigKeys.MAX_TEX_SHEET_SIZE, block.getWidth(), BlockReason.TEXTURE_OVERFLOW);
+			def.check(ConfigKeys.MAX_TEX_SHEET_SIZE, block.getHeight(), BlockReason.TEXTURE_OVERFLOW);
 		}
 		block.doReadImage();
 		texture = new DynamicTexture(block.getImage());

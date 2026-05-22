@@ -43,13 +43,23 @@ import com.tom.cpm.shared.network.ModelEventType;
 import com.tom.cpm.shared.network.NetH;
 import com.tom.cpm.shared.network.NetHandler;
 import com.tom.cpm.shared.util.MojangAPI;
+import com.tom.cpm.shared.util.SkinLayerCodec;
 
 public class MinecraftObject implements MinecraftClientAccess {
 	private final Minecraft mc;
 	private final ModelDefinitionLoader<GameProfile> loader;
 	private final PlayerRenderManager prm;
-	private final AllTagManagers tags;
+	private AllTagManagers tags;
 	public RenderTypeBuilder<ResourceLocation, RenderType> renderBuilder;
+
+	public static final SkinLayerCodec<PlayerModelPart> LAYER_CODEC = new SkinLayerCodec<>(new PlayerModelPart[] {
+			PlayerModelPart.HAT,
+			PlayerModelPart.JACKET,
+			PlayerModelPart.LEFT_PANTS_LEG,
+			PlayerModelPart.RIGHT_PANTS_LEG,
+			PlayerModelPart.LEFT_SLEEVE,
+			PlayerModelPart.RIGHT_SLEEVE,
+	});
 
 	public MinecraftObject(Minecraft mc) {
 		this.mc = mc;
@@ -62,7 +72,10 @@ public class MinecraftObject implements MinecraftClientAccess {
 		renderBuilder.register(RenderMode.COLOR, CustomRenderTypes::entityColorTranslucent, 0);
 		renderBuilder.register(RenderMode.COLOR_GLOW, CustomRenderTypes::entityColorEyes, 1);
 		renderBuilder.register(RenderMode.OUTLINE, CustomRenderTypes::linesNoDepth, 2);
-		tags = new AllTagManagers(mc, CPMTagLoader::new);
+	}
+
+	public void setTags(AllTagManagers tags) {
+		this.tags = tags;
 	}
 
 	@Override
@@ -137,20 +150,16 @@ public class MinecraftObject implements MinecraftClientAccess {
 	}
 
 	@Override
-	public void setEncodedGesture(int value) {
+	public int getEncodedGesture() {
 		Set<PlayerModelPart> s = mc.options.modelParts;
-		setEncPart(s, value, 0, PlayerModelPart.HAT);
-		setEncPart(s, value, 1, PlayerModelPart.JACKET);
-		setEncPart(s, value, 2, PlayerModelPart.LEFT_PANTS_LEG);
-		setEncPart(s, value, 3, PlayerModelPart.RIGHT_PANTS_LEG);
-		setEncPart(s, value, 4, PlayerModelPart.LEFT_SLEEVE);
-		setEncPart(s, value, 5, PlayerModelPart.RIGHT_SLEEVE);
-		mc.options.broadcastOptions();
+		return LAYER_CODEC.getValue(s::contains);
 	}
 
-	private static void setEncPart(Set<PlayerModelPart> s, int value, int off, PlayerModelPart part) {
-		if((value & (1 << off)) != 0)s.add(part);
-		else s.remove(part);
+	@Override
+	public void setEncodedGesture(int value) {
+		Set<PlayerModelPart> s = Minecraft.getInstance().options.modelParts;
+		LAYER_CODEC.setValue(value, s);
+		Minecraft.getInstance().options.broadcastOptions();
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import java.util.zip.GZIPInputStream;
 
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ResourceLoader;
@@ -29,7 +30,12 @@ public abstract class HttpResourceLoader implements ResourceLoader {
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			connection = HTTPIO.createUrlConnection(url, false);
+			connection.setRequestProperty("Accept-Encoding", "gzip");
 			web = connection.getInputStream();
+
+			if ("gzip".equals(connection.getContentEncoding())) {
+				web = new GZIPInputStream(web);
+			}
 
 			byte[] buffer = new byte[10240];
 
@@ -39,7 +45,7 @@ public abstract class HttpResourceLoader implements ResourceLoader {
 				out.write(buffer, 0, bytesJustDownloaded);
 				totalBytesDownloaded += bytesJustDownloaded;
 				if(def != null)
-					ConfigKeys.MAX_LINK_SIZE.checkFor(def.getPlayerObj(), totalBytesDownloaded / 1024, BlockReason.LINK_OVERFLOW);
+					def.check(ConfigKeys.MAX_LINK_SIZE, totalBytesDownloaded / 1024, BlockReason.LINK_OVERFLOW);
 			}
 			switch (enc) {
 			case NO_ENCODING:

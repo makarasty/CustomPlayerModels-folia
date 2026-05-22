@@ -46,7 +46,7 @@ public abstract class VRPlayerRendererMixin_VR extends LivingRenderer<AbstractCl
 			+ "Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;I)V",
 			remap = false)
 	public void onRenderPost(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Inject(
@@ -94,14 +94,14 @@ public abstract class VRPlayerRendererMixin_VR extends LivingRenderer<AbstractCl
 			"renderRightArm(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/client/entity/player/AbstractClientPlayerEntity;)V"
 	}, remap = false)
 	public void onRenderRightArmPost(MatrixStack matrices, IRenderTypeBuffer vertexConsumers, int light, AbstractClientPlayerEntity player, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Inject(at = @At("RETURN"), method = {
 			"renderLeftArm(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/client/entity/player/AbstractClientPlayerEntity;)V"
 	}, remap = false)
 	public void onRenderLeftArmPost(MatrixStack matrices, IRenderTypeBuffer vertexConsumers, int light, AbstractClientPlayerEntity player, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Inject(at = @At("HEAD"), method = {

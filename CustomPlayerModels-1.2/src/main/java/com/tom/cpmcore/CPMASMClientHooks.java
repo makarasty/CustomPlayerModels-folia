@@ -37,12 +37,12 @@ import com.tom.cpm.shared.MinecraftObjectHolder;
 import com.tom.cpm.shared.MinecraftServerAccess;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.editor.gui.EditorGui;
 import com.tom.cpm.shared.io.FastByteArrayInputStream;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 import com.tom.cpm.shared.network.NetH;
 import com.tom.cpm.shared.skin.TextureType;
 
@@ -112,15 +112,15 @@ public class CPMASMClientHooks {
 	}
 
 	public static void onHandPost(RenderPlayer this0) {
-		ClientProxy.INSTANCE.manager.unbindClear(this0.modelBipedMain);
+		ClientProxy.INSTANCE.manager.unbindFlush(this0.modelBipedMain);
 	}
 
 	public static boolean renderCape(boolean hasTex, RenderPlayer this0, EntityPlayer player, float partialTicks) {
-		Player<?> pl = ClientProxy.INSTANCE.manager.getBoundPlayer();
+		ModelBiped model = this0.modelBipedMain;
+		BoundPlayer pl = ClientProxy.INSTANCE.manager.getPlayerFromModel(model);
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
-				ModelBiped model = this0.modelBipedMain;
 				ClientProxy.mc.getPlayerRenderManager().rebindModel(model);
 				ClientProxy.INSTANCE.manager.bindSkin(model, TextureSheetType.CAPE);
 				ClientProxy.renderCape(player, partialTicks, model, def);

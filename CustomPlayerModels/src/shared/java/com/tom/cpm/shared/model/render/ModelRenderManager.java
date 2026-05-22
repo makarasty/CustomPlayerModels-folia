@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -23,6 +24,7 @@ import com.tom.cpm.shared.IPlayerRenderManager;
 import com.tom.cpm.shared.MinecraftClientAccess;
 import com.tom.cpm.shared.animation.AnimationEngine;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.definition.ModelDefinition.ModelLoadingState;
@@ -40,7 +42,7 @@ import com.tom.cpm.shared.util.ErrorLog.LogLevel;
 
 @SuppressWarnings("unchecked")
 public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderManager {
-	public static final Predicate<Player<?>> ALWAYS = p -> true;
+	public static final BooleanSupplier ALWAYS = () -> true;
 	protected Map<MB, RedirectHolder<MB, D, S, P>> holders = new HashMap<>();
 	private RedirectHolderFactory<D, S, P> factory;
 	private RedirectRendererFactory<MB, S, P> redirectFactory;
@@ -85,12 +87,12 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		this.setVis = setVis;
 	}
 
-	public void bindModel(MB model, String arg, D addDt, ModelDefinition def, Player<?> player, AnimationMode mode) {
-		getHolderSafe(model, arg, h -> h.swapIn(def, addDt, player, mode), true);
+	public void bindModel(MB model, String arg, D addDt, ModelDefinition def, Player<?> player, AnimationState state) {
+		getHolderSafe(model, arg, h -> h.swapIn(def, addDt, player, state), true);
 	}
 
-	public void bindModel(MB model, D addDt, ModelDefinition def, Player<?> player, AnimationMode mode) {
-		bindModel(model, null, addDt, def, player, mode);
+	public void bindModel(MB model, D addDt, ModelDefinition def, Player<?> player, AnimationState state) {
+		bindModel(model, null, addDt, def, player, state);
 	}
 
 	public void bindSubModel(MB mainModel, MB subModel, String arg) {
@@ -127,6 +129,10 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 
 	public boolean isBound(MB model) {
 		return isBound(model, null);
+	}
+
+	public BoundPlayer getBoundPlayer(MB model, String arg) {
+		return getHolderSafe(model, arg, h -> h.toBoundPlayer(), null, false);
 	}
 
 	public <R> R getHolderSafe(MB model, String arg, Function<RedirectHolder<MB, D, S, P>, R> func, R def, boolean make) {
@@ -177,12 +183,12 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		public boolean preRenderSetup, skinBound;
 		public Map<RedirectRenderer<P>, RedirectDataHolder<P>> partData;
 		public Player<?> playerObj;
-		public AnimationMode mode;
 		public RenderTypes<RenderMode> renderTypes;
 		private boolean loggedWarning;
 		private RedirectHolder<M, D, S, P> parent;
 		public BatchedBuffers<D, ?, ?> batch;
 		private Map<VanillaModelPart, RedirectRenderer<P>> renderAnyMap;
+		private AnimationState animState;
 
 		public RedirectHolder(ModelRenderManager<D, S, P, M> mngr, M model) {
 			this.model = model;
@@ -195,14 +201,14 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		}
 
 		public void swapIn(RedirectHolder<M, D, S, P> h) {
-			swapIn(h.def, h.addDt, h.playerObj, h.mode);
+			swapIn(h.def, h.addDt, h.playerObj, h.animState);
 			parent = h;
 		}
 
-		public final void swapIn(ModelDefinition def, D addDt, Player<?> playerObj, AnimationMode mode) {
+		public final void swapIn(ModelDefinition def, D addDt, Player<?> playerObj, AnimationState state) {
 			this.def = def;
 			this.addDt = addDt;
-			this.mode = mode;
+			this.animState = state;
 			if(swappedIn)return;
 			swapIn0();
 			for (int i = 0; i < modelFields.size(); i++) {
@@ -223,6 +229,7 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 			preRenderSetup = false;
 			this.renderTypes.clear();
 			this.playerObj = null;
+			this.animState = null;
 			parent = null;
 			if(!swappedIn)return;
 			swapOut0();
@@ -239,9 +246,9 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 			ModelDefinition def = this.def;
 			D addDt = this.addDt;
 			Player<?> playerObj = this.playerObj;
-			AnimationMode mode = this.mode;
+			AnimationState state = this.animState;
 			swapOut();
-			swapIn(def, addDt, playerObj, mode);
+			swapIn(def, addDt, playerObj, state);
 		}
 
 		private void poseSetup() {
@@ -281,8 +288,8 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 
 		protected void bindFirstSetup(boolean isPoseSetup) {
 			if(playerObj != null) {
-				playerObj.updateFromModel(model);
-				mngr.animEngine.handleAnimation(playerObj, mode, def);
+				playerObj.updateFromModel(animState, model);
+				mngr.animEngine.handleAnimation(animState, playerObj, def);
 			}
 			if(def.getResolveState() != ModelLoadingState.LOADED)return;
 			for (int i = 0; i < redirectRenderers.size(); i++) {
@@ -312,12 +319,8 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 			return rd;
 		}
 
-		protected RedirectRenderer<P> register(Field<P> f, Predicate<Player<?>> doRender) {
-			return register(f).setRenderPredicate(doRender);
-		}
-
 		protected RedirectRenderer<P> registerHead(Field<P> f) {
-			return register(f).setRenderPredicate(p -> !p.animState.hasSkullOnHead || !def.isHideHeadIfSkull());
+			return register(f).setRenderPredicate(() -> animState == null || !animState.hasSkullOnHead || !def.isHideHeadIfSkull());
 		}
 
 		private RedirectRenderer<P> register(VanillaModelPart part) {
@@ -334,7 +337,7 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		}
 
 		protected boolean skipTransform(RedirectRenderer<P> part) {
-			return false;
+			return animState.animationMode == AnimationMode.SKULL || animState.animationMode == AnimationMode.HAND;
 		}
 
 		public void logWarning() {
@@ -347,13 +350,13 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		protected boolean isDirectMode() {return false;}
 
 		protected void setupTransform(MatrixStack stack, RedirectRenderer<P> forPart, boolean pre) {
-			if(pre && def != null && def.getScale() != null && mode == AnimationMode.PLAYER) {
+			if(pre && def != null && def.getScale() != null && animState.animationMode == AnimationMode.PLAYER) {
 				transform(stack, def.getScale());
 			}
-			if(pre && def != null && def.removeBedOffset && mode == AnimationMode.PLAYER && playerObj != null && !playerObj.isClientPlayer() && playerObj.animState.sleeping) {
+			if(pre && def != null && def.removeBedOffset && animState.animationMode == AnimationMode.PLAYER && playerObj != null && !playerObj.isClientPlayer() && animState.sleeping) {
 				stack.translate(0, 0, 0.125f);
 			}
-			if(pre && def != null && mode == AnimationMode.HAND) {
+			if(pre && def != null && animState.animationMode == AnimationMode.HAND) {
 				if(forPart.getPart() == PlayerModelParts.LEFT_ARM && def.fpLeftHand != null)transform(stack, def.fpLeftHand);
 				else if(forPart.getPart() == PlayerModelParts.RIGHT_ARM && def.fpRightHand != null)transform(stack, def.fpRightHand);
 			}
@@ -400,7 +403,7 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		}
 
 		public boolean setInvisState() {
-			if(playerObj != null)playerObj.animState.invisible = true;
+			if(animState != null)animState.invisible = true;
 			if(def == null)return false;
 			if(!MinecraftClientAccess.get().getNetHandler().enableInvisGlow())return false;
 			return def.enableInvisGlow;
@@ -409,11 +412,15 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 		protected boolean enableParentRendering(VanillaModelPart part) {
 			return true;
 		}
+
+		protected BoundPlayer toBoundPlayer() {
+			return new BoundPlayer(playerObj, animState, def);
+		}
 	}
 
 	private static class RedirectDataHolder<P> {
 		private RedirectRenderer<P> copyFrom;
-		private Predicate<Player<?>> renderPredicate = ALWAYS;
+		private BooleanSupplier renderPredicate = ALWAYS;
 		private boolean wasCalled;
 
 		public void reset() {
@@ -436,7 +443,7 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 			return this;
 		}
 
-		default RedirectRenderer<P> setRenderPredicate(Predicate<Player<?>> renderPredicate) {
+		default RedirectRenderer<P> setRenderPredicate(BooleanSupplier renderPredicate) {
 			getHolder().partData.get(this).renderPredicate = renderPredicate;
 			return this;
 		}
@@ -470,14 +477,14 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 					PartRoot elems = holder.def.getModelElementFor(part);
 					if(elems != null) {
 						if(elems.isEmpty())return;
-						boolean skipTransform = holder.mode == AnimationMode.SKULL || holder.mode == AnimationMode.HAND || holder.skipTransform(this);
+						boolean skipTransform = holder.skipTransform(this);
 						float px = mngr.px.apply(tp);
 						float py = mngr.py.apply(tp);
 						float pz = mngr.pz.apply(tp);
 						float rx = mngr.rx.apply(tp);
 						float ry = mngr.ry.apply(tp);
 						float rz = mngr.rz.apply(tp);
-						boolean doRender = holder.playerObj == null || dh.renderPredicate.test(holder.playerObj);
+						boolean doRender = dh.renderPredicate.getAsBoolean();
 						elems.forEach(elem -> {
 							if(!elem.renderPart())return;
 							if(holder.def.isRemoveArmorOffset() && elems.getMainRoot() != elem && part.getCopyFrom() != null) {
@@ -711,5 +718,17 @@ public abstract class ModelRenderManager<D, S, P, MB> implements IPlayerRenderMa
 	@Override
 	public AnimationEngine getAnimationEngine() {
 		return animEngine;
+	}
+
+	public static class BoundPlayer {
+		public final Player<?> player;
+		public final AnimationState state;
+		public final ModelDefinition definition;
+
+		public BoundPlayer(Player<?> player, AnimationState state, ModelDefinition definition) {
+			this.player = player;
+			this.state = state;
+			this.definition = definition;
+		}
 	}
 }

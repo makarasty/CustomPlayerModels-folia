@@ -10,7 +10,8 @@
   "client": [
 	"MinecraftMixinFabric",
 	"LivingEntityRendererFabric",
-	"AvatarRendererFabric"
+	"AvatarRendererFabric",
+	"GuiMixinFabric"
   ],
   "injectors": {
     "defaultRequire": 1

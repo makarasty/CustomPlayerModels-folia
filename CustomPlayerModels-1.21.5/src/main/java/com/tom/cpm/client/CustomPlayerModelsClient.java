@@ -24,6 +24,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 
 import com.tom.cpl.tag.AllTagManagers;
+import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.common.Command;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
@@ -52,7 +53,7 @@ public class CustomPlayerModelsClient extends ClientBase {
 	public void playerRenderPre(RenderPlayerEvent.Pre event) {
 		PlayerRenderStateAccess sa = (PlayerRenderStateAccess) event.getRenderState();
 		if (sa.cpm$getPlayer() != null) {
-			CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), event.getMultiBufferSource(), event.getRenderer().getModel(), null);
+			CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), event.getMultiBufferSource(), event.getRenderer().getModel(), null, sa.cpm$getAnimationState());
 		}
 	}
 
@@ -105,6 +106,8 @@ public class CustomPlayerModelsClient extends ClientBase {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(Minecraft.getInstance().isPaused());
 	}
 
 	@SubscribeEvent

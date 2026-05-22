@@ -165,7 +165,7 @@ public class ModelDefinition {
 				cc += BoxRender.getExtrudeSize(rc.getCube().size, rc.getCube().texSize);
 			}
 		}
-		ConfigKeys.MAX_CUBE_COUNT.checkFor(playerObj, cc, BlockReason.TOO_MANY_CUBES);
+		check(ConfigKeys.MAX_CUBE_COUNT, cc, BlockReason.TOO_MANY_CUBES);
 		TextureStitcher stitcher = new TextureStitcher(playerObj.isClientPlayer() ? 8192 : ConfigKeys.MAX_TEX_SHEET_SIZE.getValueFor(playerObj));
 		if(textures.containsKey(TextureSheetType.SKIN)) {
 			stitcher.setBase(textures.get(TextureSheetType.SKIN));
@@ -260,6 +260,7 @@ public class ModelDefinition {
 		return animations;
 	}
 
+	@Deprecated
 	public Player<?> getPlayerObj() {
 		return playerObj;
 	}
@@ -370,6 +371,10 @@ public class ModelDefinition {
 
 	public <V> void check(PlayerSpecificConfigKey<V> key, Predicate<V> check, BlockReason err) throws SafetyException {
 		key.checkFor(playerObj, check, err);
+	}
+
+	public <V> void check(PlayerSpecificConfigKey<V> key, V value, BlockReason err) throws SafetyException {
+		key.checkFor(playerObj, value, err);
 	}
 
 	public ItemTransform getTransform(ItemSlot slot) {

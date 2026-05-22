@@ -107,7 +107,7 @@ public class StagedAnimation {
 		}
 
 		@Override
-		public void animate(long millis, ModelDefinition def, AnimationMode mode) {
+		public void animate(AnimationState state, long millis, ModelDefinition def, AnimationMode mode) {
 			AnimData d = data.get(mode);
 			long lf = d.lastFrame;
 			d.lastFrame = millis;
@@ -120,8 +120,8 @@ public class StagedAnimation {
 					}
 				} else if (stage == Stage.PLAY && d.finishing && (millis - d.offset) / parent.getDuration(mode) != (lf - d.offset) / parent.getDuration(mode)) {
 					d.finished = true;
-				} else if (tr == null || tr.canPlay(def.getPlayerObj(), mode))
-					parent.animate(millis - d.offset, def, mode);
+				} else if (tr == null || tr.canPlay(state, mode))
+					parent.animate(state, millis - d.offset, def, mode);
 			} else
 				d.offset = millis;
 		}

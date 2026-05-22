@@ -16,10 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 import com.tom.cpm.client.CustomPlayerModelsClient;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 
 @Mixin(CapeLayer.class)
 public abstract class CapeLayerMixin extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
@@ -31,9 +31,9 @@ public abstract class CapeLayerMixin extends LayerRenderer<AbstractClientPlayerE
 
 	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;FFFFFFF)V", cancellable = true)
 	public void onRender(AbstractClientPlayerEntity player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo cbi) {
-		Player<?> pl = CustomPlayerModelsClient.INSTANCE.manager.getBoundPlayer();
+		BoundPlayer pl = CustomPlayerModelsClient.INSTANCE.manager.getPlayerFromModel(getParentModel());
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
 				ItemStack chestplate = player.getItemBySlot(EquipmentSlotType.CHEST);
 				if(!player.isInvisible() && player.isModelPartShown(PlayerModelPart.CAPE) && chestplate.getItem() != Items.ELYTRA) {

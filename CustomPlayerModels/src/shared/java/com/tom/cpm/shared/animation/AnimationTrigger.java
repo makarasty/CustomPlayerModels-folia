@@ -6,7 +6,6 @@ import java.util.Set;
 import com.tom.cpl.math.MathHelper;
 import com.tom.cpm.shared.MinecraftClientAccess;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.network.ServerCaps;
 
 public class AnimationTrigger {
@@ -29,7 +28,7 @@ public class AnimationTrigger {
 		return valuePose != null ? valuePose.getTime(state, time) : time;
 	}
 
-	public boolean canPlay(Player<?> pl, AnimationMode mode) {
+	public boolean canPlay(AnimationState state, AnimationMode mode) {
 		return true;
 	}
 
@@ -45,10 +44,10 @@ public class AnimationTrigger {
 		}
 
 		@Override
-		public boolean canPlay(Player<?> pl, AnimationMode mode) {
+		public boolean canPlay(AnimationState state, AnimationMode mode) {
 			byte v;
-			if (pl.animState.gestureData != null && pl.animState.gestureData.length > id) {
-				v = pl.animState.gestureData[id];
+			if (state.gestureData != null && state.gestureData.length > id) {
+				v = state.gestureData[id];
 			} else {
 				v = reg.getParams().getDefaultParam(id);
 			}
@@ -67,14 +66,14 @@ public class AnimationTrigger {
 		}
 
 		@Override
-		public boolean canPlay(Player<?> pl, AnimationMode mode) {
+		public boolean canPlay(AnimationState state, AnimationMode mode) {
 			if (MinecraftClientAccess.get().getNetHandler().hasServerCap(ServerCaps.GESTURES)) {
-				if (pl.animState.gestureData != null && pl.animState.gestureData.length > 1) {
-					byte v = pl.animState.gestureData[1];
+				if (state.gestureData != null && state.gestureData.length > 1) {
+					byte v = state.gestureData[1];
 					return v == value;
 				}
 			} else if(gid != -1) {
-				return pl.animState.encodedState == gid;
+				return state.encodedState == gid;
 			}
 			return false;
 		}

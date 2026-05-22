@@ -12,8 +12,7 @@ import com.tom.cpm.shared.MinecraftCommonAccess;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
 import com.tom.cpm.shared.animation.AnimationHandler;
 import com.tom.cpm.shared.animation.AnimationState;
-import com.tom.cpm.shared.animation.IPose;
-import com.tom.cpm.shared.animation.VanillaPose;
+import com.tom.cpm.shared.animation.PersistentAnimationState;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.definition.ModelDefinition.ModelLoadingState;
 import com.tom.cpm.shared.model.SkinType;
@@ -26,10 +25,7 @@ public abstract class Player<P> {
 	private CompletableFuture<ModelDefinition> definition;
 	private EnumMap<AnimationMode, AnimationHandler> animHandler = new EnumMap<>(AnimationMode.class);
 	private PlayerTextureLoader textures;
-	public AnimationState animState = new AnimationState();
-
-	public VanillaPose prevPose;
-	public IPose currentPose;
+	public PersistentAnimationState persistentState = new PersistentAnimationState();
 
 	public boolean forcedSkin;
 	public boolean sentEventSubs;
@@ -48,18 +44,19 @@ public abstract class Player<P> {
 	protected abstract PlayerTextureLoader initTextures();
 	public abstract String getName();
 	public abstract UUID getUUID();
-	public abstract void updateFromPlayer(P player);
+	public abstract void updateFromPlayer(AnimationState animState, P player);
 	public abstract Object getGameProfile();
-	public abstract void updateFromModel(Object model);
+	public abstract void updateFromModel(AnimationState animState, Object model);
 
 	@SuppressWarnings("unchecked")
-	public void updatePlayer(P player) {
-		updateFromPlayer(player);
+	public void updatePlayer(P player, AnimationState state) {
 		NetHandler<?, P, ?> net = (NetHandler<?, P, ?>) MinecraftClientAccess.get().getNetHandler();
-		net.updatePlayer(player, animState.localState);
-		animState.speakLevel = (float) MinecraftCommonAccess.get().getApi().clientApi().getVoiceProviders().stream().
+		net.updatePlayer(player, persistentState.localState);
+		persistentState.apply(state);
+		updateFromPlayer(state, player);
+		state.speakLevel = (float) MinecraftCommonAccess.get().getApi().clientApi().getVoiceProviders().stream().
 				mapToDouble(f -> f.apply(player)).max().orElse(0);
-		animState.voiceMuted = MinecraftCommonAccess.get().getApi().clientApi().getVoiceMutedProviders().stream().anyMatch(p -> p.test(player));
+		state.voiceMuted = MinecraftCommonAccess.get().getApi().clientApi().getVoiceMutedProviders().stream().anyMatch(p -> p.test(player));
 	}
 
 	public void setModelDefinition(CompletableFuture<ModelDefinition> definition, boolean isModel) {

@@ -1,0 +1,7 @@
+plugins {
+    id 'forge-conventions'
+}
+
+dependencies {
+	implementation fg.deobf("maven.modrinth:plasmo-voice:forge-1.16.5-2.1.9")
+}

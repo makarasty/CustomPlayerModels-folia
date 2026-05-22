@@ -45,7 +45,7 @@ public class VRArmRendererMixin_VR extends PlayerRenderer {
 			"func_229144_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/client/entity/player/AbstractClientPlayerEntity;)V"
 	}, remap = false)
 	public void onRenderRightArmPost(MatrixStack matrices, IRenderTypeBuffer vertexConsumers, int light, AbstractClientPlayerEntity player, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Inject(at = @At("RETURN"), method = {
@@ -53,7 +53,7 @@ public class VRArmRendererMixin_VR extends PlayerRenderer {
 			"func_229146_b_(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/client/entity/player/AbstractClientPlayerEntity;)V"
 	}, remap = false)
 	public void onRenderLeftArmPost(MatrixStack matrices, IRenderTypeBuffer vertexConsumers, int light, AbstractClientPlayerEntity player, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(getModel());
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(getModel());
 	}
 
 	@Redirect(at =

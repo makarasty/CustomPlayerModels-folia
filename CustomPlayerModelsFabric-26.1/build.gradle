@@ -46,11 +46,12 @@ dependencies {
 	compileOnly("net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}")
 	localRuntime("net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}")
 	
-	/*modImplementation("com.terraformersmc:modmenu:16.0.0-rc.1") {
+	implementation("com.terraformersmc:modmenu:18.0.0-alpha.8") {
         exclude(group: "net.fabricmc.fabric-api")
-    }*/
+    }
 	
 	compileOnly files("../CustomPlayerModels-26.1/stubs/of.jar")
+	compileOnly files("../CustomPlayerModels-26.1/stubs/realcamera.jar")
 	
 	/*modCompileOnly('maven.modrinth:sodium:mc1.21.10-0.7.2-fabric')
 	modCompileOnly('maven.modrinth:iris:1.9.6+1.21.10-fabric')
@@ -87,7 +88,6 @@ sourceSets {
 			srcDir "../CustomPlayerModels/src/shared/java"
 			srcDir "../CustomPlayerModels-26.1/src/platform-shared/java"
 			srcDir "src/rawmc-shared/java"
-			exclude "com/tom/cpm/ModMenu.java"
 		}
 		resources {
 			srcDir "../CustomPlayerModels/src/shared/resources"

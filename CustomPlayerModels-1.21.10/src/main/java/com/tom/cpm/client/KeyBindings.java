@@ -25,7 +25,8 @@ public class KeyBindings implements IKeybind {
 	public static IKeybind[] quickAccess = new IKeybind[IKeybind.QUICK_ACCESS_KEYBINDS_COUNT];
 
 	public static void init(RegisterKeyMappingsEvent evt) {
-		category = KeyMapping.Category.register(ResourceLocation.tryBuild("cpm", "keys"));
+		category = new KeyMapping.Category(ResourceLocation.tryBuild("cpm", "keys"));
+		evt.registerCategory(category);
 
 		gestureMenuBinding = new KeyMapping("key.cpm.gestureMenu", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_H), category);
 		renderToggleBinding = new KeyMapping("key.cpm.renderToggle", KeyConflictContext.IN_GAME, InputConstants.UNKNOWN, category);

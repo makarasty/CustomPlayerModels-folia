@@ -8,8 +8,8 @@ import java.util.function.Predicate;
 import com.tom.cpl.function.ToFloatFunction;
 import com.tom.cpl.nbt.NBTTagCompound;
 import com.tom.cpm.shared.MinecraftClientAccess;
-import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.animation.IPose;
+import com.tom.cpm.shared.animation.PersistentAnimationState;
 import com.tom.cpm.shared.animation.ServerAnimationState;
 import com.tom.cpm.shared.animation.VanillaPose;
 
@@ -37,7 +37,7 @@ public enum ModelEventType {
 			}
 
 			@Override
-			public void read(ModelEventType type, AnimationState state, NBTTagCompound tag) {
+			public void read(ModelEventType type, PersistentAnimationState state, NBTTagCompound tag) {
 				set.accept(state.serverState, tag.getFloat(type.getName()));
 			}
 		};
@@ -52,13 +52,13 @@ public enum ModelEventType {
 			}
 
 			@Override
-			public void read(ModelEventType type, AnimationState state, NBTTagCompound tag) {
+			public void read(ModelEventType type, PersistentAnimationState state, NBTTagCompound tag) {
 				set.accept(state.serverState, tag.getBoolean(type.getName()));
 			}
 		};
 	}
 
-	private static ValueSync eventType(BiConsumer<AnimationState, Long> set) {
+	private static ValueSync eventType(BiConsumer<PersistentAnimationState, Long> set) {
 		return new ValueSync() {
 
 			@Override
@@ -67,12 +67,12 @@ public enum ModelEventType {
 			}
 
 			@Override
-			public void read(ModelEventType type, AnimationState state, NBTTagCompound tag) {
+			public void read(ModelEventType type, PersistentAnimationState state, NBTTagCompound tag) {
 				set.accept(state, tag.getBoolean(type.getName()) ? MinecraftClientAccess.get().getPlayerRenderManager().getAnimationEngine().getTime() : 0);
 			}
 
 			@Override
-			public void trigger(AnimationState state) {
+			public void trigger(PersistentAnimationState state) {
 				set.accept(state, MinecraftClientAccess.get().getPlayerRenderManager().getAnimationEngine().getTime());
 			}
 
@@ -115,7 +115,7 @@ public enum ModelEventType {
 		sync.write(this, state, tag);
 	}
 
-	public void read(AnimationState state, NBTTagCompound tag) {
+	public void read(PersistentAnimationState state, NBTTagCompound tag) {
 		sync.read(this, state, tag);
 	}
 
@@ -123,18 +123,18 @@ public enum ModelEventType {
 		return sync.autoSync();
 	}
 
-	public void trigger(AnimationState state) {
+	public void trigger(PersistentAnimationState state) {
 		sync.trigger(state);
 	}
 
 	public interface ValueSync {
 		void write(ModelEventType type, ServerAnimationState state, NBTTagCompound tag);
-		void read(ModelEventType type, AnimationState state, NBTTagCompound tag);
+		void read(ModelEventType type, PersistentAnimationState state, NBTTagCompound tag);
 
 		default boolean autoSync() {
 			return true;
 		}
 
-		default void trigger(AnimationState state) {}
+		default void trigger(PersistentAnimationState state) {}
 	}
 }

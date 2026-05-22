@@ -53,7 +53,7 @@ public class Animation implements IAnimation {
 	}
 
 	@Override
-	public void animate(long millis, ModelDefinition def, AnimationMode mode) {
+	public void animate(AnimationState state, long millis, ModelDefinition def, AnimationMode mode) {
 		if(frames == 0)return;
 		float step = (float) millis % duration / duration * frames;
 		for (int componentId = 0; componentId < componentIDs.length; componentId++) {

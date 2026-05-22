@@ -59,6 +59,7 @@ public class CustomRenderTypes {
 		return create(
 				"cpm:lines_no_depth",
 				1536,
+				false, true,
 				LINES.get(),
 				RenderType.CompositeState.builder().
 				setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty())).

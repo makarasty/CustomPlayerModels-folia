@@ -187,7 +187,7 @@ public abstract class ClientBase {
 	}
 
 	public void playerRenderPost(MultiBufferSource buffer, PlayerModel model) {
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderHand(MultiBufferSource buffer, PlayerModel model) {
@@ -195,7 +195,7 @@ public abstract class ClientBase {
 	}
 
 	public void renderHandPost(MultiBufferSource buffer, HumanoidModel model) {
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderSkull(Model skullModel, GameProfile profile, MultiBufferSource buffer) {

@@ -18,13 +18,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven {
-    	url = "http://localhost:8000"
-		allowInsecureProtocol true
-		content {
-            includeGroup "local"
-        }
-	}
+	maven { url "https://maven.terraformersmc.com/releases/"}
 }
 
 dependencies {

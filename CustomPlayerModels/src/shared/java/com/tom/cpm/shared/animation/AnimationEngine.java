@@ -63,8 +63,8 @@ public class AnimationEngine {
 					gesturesChanged = true;
 					this.lastDetails = param;
 				}
-				if (player.animState.gestureData == null) {
-					player.animState.gestureData = Arrays.copyOf(gestureData, gestureData.length);
+				if (player.persistentState.gestureData == null) {
+					player.persistentState.gestureData = Arrays.copyOf(gestureData, gestureData.length);
 				}
 			}
 			if(MinecraftClientAccess.get().getServerSideStatus() == ServerStatus.INSTALLED) {
@@ -117,35 +117,37 @@ public class AnimationEngine {
 		return (long) ((tickCounter + partial) * 50);
 	}
 
-	public void prepareAnimations(Player<?> player, AnimationMode mode, ModelDefinition def) {
+	public void prepareAnimations(PersistentAnimationState persistent, AnimationState state, ModelDefinition def) {
 		long time = getTime();
 		AnimationRegistry reg = def.getAnimations();
-		if(mode == AnimationMode.PLAYER) {
-			player.animState.preAnimate();
-			VanillaPose pose = player.animState.getMainPose(time, reg);
-			if (MinecraftClientAccess.get().getNetHandler().hasServerCap(ServerCaps.GESTURES) && player.animState.gestureData != null && player.animState.gestureData.length > 1) {
-				if(player.animState.gestureData[0] == 0) {
-					player.currentPose = pose;
+		if(state.animationMode == AnimationMode.PLAYER) {
+			state.preAnimate();
+			VanillaPose pose = state.getMainPose(time, reg);
+			if (MinecraftClientAccess.get().getNetHandler().hasServerCap(ServerCaps.GESTURES) && state.gestureData != null && state.gestureData.length > 1) {
+				if(state.gestureData[0] == 0) {
+					persistent.currentPose = pose;
 				} else {
-					player.currentPose = reg.getPoseById(player.animState.gestureData[0], player.currentPose);
-					player.prevPose = pose;
+					persistent.currentPose = reg.getPoseById(state.gestureData[0], persistent.currentPose);
+					persistent.prevPose = pose;
 				}
 			} else {
-				int gesture = player.animState.encodedState;
-				if(pose != player.prevPose || gesture == reg.getPoseResetId()) {
-					player.currentPose = pose;
+				int gesture = state.encodedState;
+				if(pose != persistent.prevPose || gesture == reg.getPoseResetId()) {
+					persistent.currentPose = pose;
 				}
-				player.currentPose = reg.getPoseEncoded(gesture, player.currentPose);
-				player.prevPose = pose;
+				persistent.currentPose = reg.getPoseEncoded(gesture, persistent.currentPose);
+				persistent.prevPose = pose;
 			}
 		}
+		state.currentPose = persistent.currentPose;
 		reg.tickAnimated(time, false);
 	}
 
-	public void handleAnimation(Player<?> player, AnimationMode mode, ModelDefinition def) {
+	public void handleAnimation(AnimationState state, Player<?> player, ModelDefinition def) {
+		AnimationMode mode = state.animationMode;
 		if (mode == AnimationMode.PLAYER) {
-			if (player.animState.firstPersonMod)mode = AnimationMode.FIRST_PERSON;
-			else if (player.animState.inGui)mode = AnimationMode.GUI;
+			if (state.firstPersonMod)mode = AnimationMode.FIRST_PERSON;
+			else if (state.inGui)mode = AnimationMode.GUI;
 		}
 		AnimationHandler h = player.getAnimationHandler(mode);
 		try {
@@ -154,19 +156,19 @@ public class AnimationEngine {
 			switch (mode) {
 			case HAND:
 				def.resetAnimationPos();
-				VanillaPose pose = player.animState.vrState == VRState.FIRST_PERSON ? VanillaPose.VR_FIRST_PERSON : VanillaPose.FIRST_PERSON_HAND;
+				VanillaPose pose = state.vrState == VRState.FIRST_PERSON ? VanillaPose.VR_FIRST_PERSON : VanillaPose.FIRST_PERSON_HAND;
 				List<AnimationTrigger> a = reg.getPoseAnimations(pose);
-				h.addAnimations(a, pose);
+				h.addAnimations(state, a, pose);
 				break;
 
 			case PLAYER:
 			case FIRST_PERSON:
 			case GUI:
 			{
-				player.animState.preAnimate();
-				List<AnimationTrigger> anim = reg.getPoseAnimations(player.currentPose);
-				h.addAnimations(anim, player.currentPose);
-				player.animState.collectAnimations(p -> h.addAnimations(reg.getPoseAnimations(p), p), reg);
+				state.preAnimate();
+				List<AnimationTrigger> anim = reg.getPoseAnimations(state.currentPose);
+				h.addAnimations(state, anim, state.currentPose);
+				state.collectAnimations(p -> h.addAnimations(state, reg.getPoseAnimations(p), p), reg);
 			}
 			break;
 
@@ -174,15 +176,15 @@ public class AnimationEngine {
 			{
 				List<AnimationTrigger> anim = reg.getPoseAnimations(VanillaPose.SKULL_RENDER);
 				List<AnimationTrigger> global = reg.getPoseAnimations(VanillaPose.GLOBAL);
-				h.addAnimations(anim, VanillaPose.SKULL_RENDER);
-				h.addAnimations(global, VanillaPose.GLOBAL);
+				h.addAnimations(state, anim, VanillaPose.SKULL_RENDER);
+				h.addAnimations(state, global, VanillaPose.GLOBAL);
 			}
 			break;
 
 			default:
 				break;
 			}
-			h.animate(player.animState, time);
+			h.animate(state, time);
 		} catch (Exception e) {
 			Log.warn("Error animating model", e);
 			try {
@@ -198,16 +200,17 @@ public class AnimationEngine {
 
 	public void handleGuiAnimation(AnimationHandler h, ModelDefinition def) {
 		try {
+			AnimationState state = new AnimationState(AnimationMode.GUI);
 			long time = getTime();
 			AnimationRegistry reg = def.getAnimations();
 			reg.tickAnimated(time, true);
 			List<AnimationTrigger> anim = def.getAnimations().getPoseAnimations(VanillaPose.STANDING);
 			List<AnimationTrigger> global = def.getAnimations().getPoseAnimations(VanillaPose.GLOBAL);
 			List<AnimationTrigger> inGui = def.getAnimations().getPoseAnimations(VanillaPose.IN_GUI);
-			h.addAnimations(anim, VanillaPose.STANDING);
-			h.addAnimations(global, VanillaPose.GLOBAL);
-			h.addAnimations(inGui, VanillaPose.IN_GUI);
-			h.animate(null, time);
+			h.addAnimations(state, anim, VanillaPose.STANDING);
+			h.addAnimations(state, global, VanillaPose.GLOBAL);
+			h.addAnimations(state, inGui, VanillaPose.IN_GUI);
+			h.animate(state, time);
 		} catch (Exception e) {
 			Log.warn("Error animating model", e);
 			def.resetAnimationPos();

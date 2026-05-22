@@ -2,13 +2,16 @@ package com.tom.cpm.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.CustomizeSkinScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.resources.ResourcePackType;
 
+import com.tom.cpl.tag.AllTagManagers;
 import com.tom.cpm.CustomPlayerModels;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
@@ -27,6 +30,7 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 		init0();
 		irisLoaded = FabricLoader.getInstance().isModLoaded("iris");
 		if(irisLoaded)Log.info("Iris detected, enabling iris compatibility");
+		mc.setTags(new AllTagManagers(ResourceManagerHelper.get(ResourcePackType.CLIENT_RESOURCES), CPMTagLoaderFabric::new));
 		ClientTickEvents.START_CLIENT_TICK.register(cl -> {
 			if(!cl.isPaused())
 				mc.getPlayerRenderManager().getAnimationEngine().tick();
@@ -45,6 +49,8 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 			}
 
 			mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+			CustomPlayerModels.api.clientApi().tickListeners(minecraft.isPaused());
 		});
 		init1();
 		CustomPlayerModels.LOG.info("Customizable Player Models Client Initialized");

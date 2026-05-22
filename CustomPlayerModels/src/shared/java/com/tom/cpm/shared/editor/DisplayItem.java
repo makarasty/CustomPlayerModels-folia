@@ -16,6 +16,7 @@ public enum DisplayItem {
 	SPYGLASS(ArmPose.SPYGLASS, false, ItemSlot.HEAD),
 	GOAT_HORN(ArmPose.TOOT_HORN, false),
 	BRUSH(ArmPose.BRUSH, false),
+	SPEAR(ArmPose.SPEAR, false),
 	;
 	public static final DisplayItem[] VALUES = values();
 

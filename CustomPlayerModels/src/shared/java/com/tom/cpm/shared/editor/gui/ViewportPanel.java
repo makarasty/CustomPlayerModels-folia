@@ -97,6 +97,7 @@ public class ViewportPanel extends ViewportPanelBase3d {
 		}
 		if(editor.renderBase.get())renderBase(stack, buf);
 		editor.definition.renderingPanel = this;
+		animationState.animationMode = getAnimMode();
 		renderModel(stack, buf, partialTicks);
 		VBuffers rp = buf.replay();
 		editor.render(stack, rp, this);
@@ -129,7 +130,7 @@ public class ViewportPanel extends ViewportPanelBase3d {
 	public void draw(MouseEvent event, float partialTicks) {
 		gui.drawText(0, -10, "a", 0xffffffff);//For some reason this fixes #221
 		super.draw(event, partialTicks);
-		if(MinecraftObjectHolder.DEBUGGING && gui.isCtrlDown()) {
+		if(MinecraftObjectHolder.DEBUGGING && gui.isCtrlDown() && debugTexture != null) {
 			debugTexture.bind();
 			draw3dOverlay();
 		}
@@ -183,8 +184,7 @@ public class ViewportPanel extends ViewportPanelBase3d {
 		return editor.applyScaling ? editor.scalingElem.getScale() : 1;
 	}
 
-	@Override
-	public AnimationMode getAnimMode() {
+	private AnimationMode getAnimMode() {
 		return editor.getRenderedPose() == VanillaPose.SKULL_RENDER ? AnimationMode.SKULL : AnimationMode.PLAYER;
 	}
 

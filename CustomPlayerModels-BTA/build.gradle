@@ -79,6 +79,7 @@ sourceSets {
 			exclude "com/tom/cpl/util/NettyByteBufInputStream.java"
 			srcDir "../CustomPlayerModels-1.6/src/retro/java"
 			exclude "com/tom/cpl/command/BrigadierCommandHandler.java"
+			exclude "com/tom/cpl/command/BrigadierCommandHandlerBase.java"
 		}
 		resources {
 			srcDir "../CustomPlayerModels/src/shared/resources"

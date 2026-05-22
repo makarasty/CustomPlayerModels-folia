@@ -194,6 +194,14 @@ public interface IClientAPI extends ISharedAPI {
 	int getAnimationMaxValue(String name);
 
 	/**
+	 * Called after CPM ticks on the client
+	 * Useful for integration mods that play custom animations (OSC)
+	 *
+	 * @param The tick event handler
+	 * */
+	void registerClientGameTick(TickEventHandler onTick);
+
+	/**
 	 * Player renderer for 1.16 and newer versions
 	 *
 	 * See {@link RetroPlayerRenderer} for 1.12 and older versions

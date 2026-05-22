@@ -21,6 +21,6 @@ public class ReceiveEventS2C extends NBTEntityS2C {
 	@Override
 	protected <P> void handle(NetHandler<?, P, ?> handler, NetH from, P player) {
 		Player<?> pl = MinecraftClientAccess.get().getDefinitionLoader().loadPlayer(handler.getLoaderId(player), ModelDefinitionLoader.PLAYER_UNIQUE);
-		pl.animState.receiveEvent(tag, pl.isClientPlayer());
+		pl.persistentState.receiveEvent(tag, pl.isClientPlayer());
 	}
 }

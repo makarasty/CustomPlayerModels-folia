@@ -91,7 +91,7 @@ public class ClientBase {
 
 	public void playerRenderPost(IRenderTypeBuffer buffer, PlayerModel model) {
 		if(buffer instanceof IRenderTypeBuffer.Impl)((IRenderTypeBuffer.Impl)buffer).endBatch();
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderHand(IRenderTypeBuffer buffer, PlayerModel model) {
@@ -100,7 +100,7 @@ public class ClientBase {
 
 	public void renderHandPost(IRenderTypeBuffer buffer, BipedModel model) {
 		if(buffer instanceof IRenderTypeBuffer.Impl)((IRenderTypeBuffer.Impl)buffer).endBatch();
-		manager.unbindClear(model);
+		manager.unbindFlush(model);
 	}
 
 	public void renderSkull(Model skullModel, GameProfile profile, IRenderTypeBuffer buffer) {

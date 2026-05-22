@@ -110,4 +110,8 @@ public class ClientApi implements IClientAPI {
 	public int getAnimationMaxValue(String name) {
 		return -1;
 	}
+
+	@Override
+	public void registerClientGameTick(TickEventHandler onTick) {
+	}
 }

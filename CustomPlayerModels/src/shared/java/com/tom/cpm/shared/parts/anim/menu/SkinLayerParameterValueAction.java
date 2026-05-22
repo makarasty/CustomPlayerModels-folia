@@ -3,7 +3,6 @@ package com.tom.cpm.shared.parts.anim.menu;
 import com.tom.cpl.nbt.NBTTagCompound;
 import com.tom.cpm.shared.MinecraftClientAccess;
 import com.tom.cpm.shared.animation.AnimationEngine;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.network.ServerCaps;
 import com.tom.cpm.shared.parts.anim.menu.CommandAction.LegacyCommandActionWriter;
@@ -65,9 +64,8 @@ public class SkinLayerParameterValueAction implements CommandAction, LegacyComma
 			else
 				an.setGestureValue(parameter, value);
 		} else {
-			Player<?> pl = def.getPlayerObj();
 			int id;
-			if (pl.animState.encodedState == gid) {
+			if (MinecraftClientAccess.get().getEncodedGesture() == gid) {
 				id = pose ? def.getAnimations().getPoseResetId() : def.getAnimations().getBlankGesture();
 			} else {
 				id = gid;

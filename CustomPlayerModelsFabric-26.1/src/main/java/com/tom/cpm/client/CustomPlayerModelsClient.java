@@ -59,6 +59,8 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 			}
 
 			mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+			CustomPlayerModels.api.clientApi().tickListeners(client.isPaused());
 		});
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			ScreenEvents.beforeExtract(screen).register((_, _, _, _, _) -> PlayerProfile.inGui = true);

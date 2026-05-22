@@ -19,6 +19,7 @@ import com.tom.cpm.common.WorldImpl;
 import com.tom.cpm.retro.GameProfile;
 import com.tom.cpm.retro.GameProfileManager;
 import com.tom.cpm.retro.NetHandlerExt.IPlayerProfile;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -78,7 +79,7 @@ public class PlayerProfile extends Player<EntityPlayer> implements IPlayerProfil
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateFromPlayer(EntityPlayer player) {
+	public void updateFromPlayer(AnimationState animState, EntityPlayer player) {
 		animState.resetPlayer();
 		if(player.isPlayerSleeping())animState.sleeping = true;
 		if(player.isDead)animState.dying = true;
@@ -123,7 +124,7 @@ public class PlayerProfile extends Player<EntityPlayer> implements IPlayerProfil
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof ModelBiped) {
 			ModelBiped m = (ModelBiped) model;
 			animState.resetModel();

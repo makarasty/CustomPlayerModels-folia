@@ -96,7 +96,6 @@ sourceSets {
 			srcDir "../CustomPlayerModels/src/shared/java"
 			srcDir "../CustomPlayerModels-1.21.10/src/platform-shared/java"
 			srcDir "src/rawmc-shared/java"
-			//exclude "com/tom/cpm/ModMenu.java"
 		}
 		resources {
 			srcDir "../CustomPlayerModels/src/shared/resources"

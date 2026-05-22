@@ -162,7 +162,7 @@ public class AttributeScaler implements ScalerInterface<Player, List<Attribute>>
 			case STEP_HEIGHT:
 				return Collections.singletonList(getAttributeSafely("GENERIC_STEP_HEIGHT"));
 			case THIRD_PERSON:
-				return Collections.singletonList(Attribute.CAMERA_DISTANCE);
+				return Collections.singletonList(getAttributeSafely("CAMERA_DISTANCE"));
 			default:
 				return null;
 			}

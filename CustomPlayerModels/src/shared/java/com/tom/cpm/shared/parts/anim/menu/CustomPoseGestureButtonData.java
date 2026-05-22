@@ -7,7 +7,6 @@ import com.tom.cpm.shared.MinecraftClientAccess.ServerStatus;
 import com.tom.cpm.shared.animation.AnimationEngine;
 import com.tom.cpm.shared.config.ConfigKeys;
 import com.tom.cpm.shared.config.ModConfig;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.io.IOHelper;
 import com.tom.cpm.shared.network.ServerCaps;
 import com.tom.cpm.shared.parts.anim.AnimLoaderState;
@@ -77,9 +76,8 @@ public class CustomPoseGestureButtonData extends AbstractCommandTriggerableData 
 		if (MinecraftClientAccess.get().getNetHandler().hasServerCap(ServerCaps.GESTURES)) {
 			action.setValue(val);
 		} else if (layerCtrl) {
-			Player<?> pl = def.getPlayerObj();
 			int id;
-			if (val == 0 || (val == -1 && pl.animState.encodedState == gid)) {
+			if (val == 0 || (val == -1 && MinecraftClientAccess.get().getEncodedGesture() == gid)) {
 				id = pose ? def.getAnimations().getPoseResetId() : def.getAnimations().getBlankGesture();
 			} else {
 				id = gid;

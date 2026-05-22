@@ -8,18 +8,13 @@ import com.tom.cpl.block.World;
 import com.tom.cpl.block.entity.ActiveEffect;
 import com.tom.cpl.block.entity.EntityType;
 import com.tom.cpl.item.Inventory;
-import com.tom.cpl.nbt.NBTTagCompound;
 import com.tom.cpl.util.Hand;
 import com.tom.cpl.util.HandAnimation;
-import com.tom.cpm.shared.MinecraftClientAccess;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
-import com.tom.cpm.shared.network.ModelEventType;
-import com.tom.cpm.shared.network.NetworkUtil;
 
 public class AnimationState {
-	public final ServerAnimationState serverState = new ServerAnimationState();
-	public final ServerAnimationState localState = new ServerAnimationState();
+	public ServerAnimationState syncState;
 	public Inventory playerInventory;
 	public World world;
 	public EntityType vehicle;
@@ -41,6 +36,14 @@ public class AnimationState {
 	public AnimationMode animationMode;
 	public long dayTime;
 	public List<ActiveEffect> allEffects = new ArrayList<>();
+	public IPose currentPose;
+
+	public AnimationState() {
+	}
+
+	public AnimationState(AnimationMode animationMode) {
+		this.animationMode = animationMode;
+	}
 
 	public void resetPlayer() {
 		sleeping = false;
@@ -85,9 +88,9 @@ public class AnimationState {
 		else if(dying)return VanillaPose.DYING;
 		else if(elytraFlying)return VanillaPose.FLYING;
 		else if(tridentSpin)return VanillaPose.TRIDENT_SPIN;
-		else if(localState.falling > 4 || serverState.falling > 4)return VanillaPose.FALLING;
+		else if(syncState.falling > 4)return VanillaPose.FALLING;
 		else if(riding)return VanillaPose.RIDING;
-		else if(localState.creativeFlying || serverState.creativeFlying)return VanillaPose.CREATIVE_FLYING;
+		else if(syncState.creativeFlying)return VanillaPose.CREATIVE_FLYING;
 		else if(crawling && registry.hasPoseAnimations(VanillaPose.CRAWLING))return VanillaPose.CRAWLING;
 		else if(swimming)return VanillaPose.SWIMMING;
 		else if(retroSwimming && registry.hasPoseAnimations(VanillaPose.RETRO_SWIMMING))return VanillaPose.RETRO_SWIMMING;
@@ -137,7 +140,7 @@ public class AnimationState {
 			default: break;
 			}
 		}
-		if(localState.inMenu || serverState.inMenu)h.accept(VanillaPose.IN_MENU);
+		if(syncState.inMenu)h.accept(VanillaPose.IN_MENU);
 		h.accept(VanillaPose.HEALTH);
 		h.accept(VanillaPose.HUNGER);
 		h.accept(VanillaPose.AIR);
@@ -147,7 +150,7 @@ public class AnimationState {
 		h.accept(VanillaPose.HEAD_ROTATION_PITCH);
 	}
 
-	private static VanillaPose getArmPose(ArmPose pose, boolean left) {
+	private VanillaPose getArmPose(ArmPose pose, boolean left) {
 		switch (pose) {
 		case BLOCK:
 			return left ? VanillaPose.BLOCKING_LEFT : VanillaPose.BLOCKING_RIGHT;
@@ -169,31 +172,13 @@ public class AnimationState {
 			return left ? VanillaPose.TOOT_HORN_LEFT : VanillaPose.TOOT_HORN_RIGHT;
 		case BRUSH:
 			return left ? VanillaPose.BRUSH_LEFT : VanillaPose.BRUSH_RIGHT;
+		case SPEAR:
+			return usingAnimation == HandAnimation.SPEAR ? (left ? VanillaPose.SPEAR_LEFT : VanillaPose.SPEAR_RIGHT) :
+				(left ? VanillaPose.HOLDING_LEFT : VanillaPose.HOLDING_RIGHT);
 		default:
 			break;
 		}
 		return null;
-	}
-
-	public void receiveEvent(NBTTagCompound tag, boolean isClient) {
-		serverState.isSelf = isClient;
-		if(!isClient || tag.getBoolean(NetworkUtil.SELF_EVENT)) {
-			serverState.updated = true;
-			for(ModelEventType t : ModelEventType.VALUES) {
-				if(tag.hasKey(t.getName())) {
-					t.read(this, tag);
-				}
-			}
-		}
-		if(tag.hasKey(NetworkUtil.GESTURE)) {
-			prevGestureData = gestureData;
-			gestureData = tag.getByteArray(NetworkUtil.GESTURE);
-			lastGestureReceiveTime = MinecraftClientAccess.get().getPlayerRenderManager().getAnimationEngine().getTime();
-		}
-	}
-
-	public void jump() {
-		ModelEventType.JUMPING.trigger(this);
 	}
 
 	public void preAnimate() {

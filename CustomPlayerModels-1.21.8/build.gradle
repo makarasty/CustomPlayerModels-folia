@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.168'
+    id 'net.neoforged.gradle.userdev' version '7.0.192'
 }
 
 version = mod_version
@@ -136,6 +136,7 @@ dependencies {
     compileOnly files("stubs/of.jar")
     compileOnly files("stubs/iris.jar")
     compileOnly files("stubs/fpm.jar")
+    compileOnly files("stubs/realcamera.jar")
     
     if (useLib) {
     	compileOnly "maven.modrinth:vivecraft:1.21.6-1.2.5-b2-neoforge"

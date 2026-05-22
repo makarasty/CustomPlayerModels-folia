@@ -29,6 +29,6 @@ A Customizable Player Models, OSC/VMC protocol compat mod.
 [[dependencies.cpmoscc]]
     modId="cpm"
     type="required"
-    versionRange="*"
+    versionRange="[0.6.26a,)"
     ordering="NONE"
     side="BOTH"

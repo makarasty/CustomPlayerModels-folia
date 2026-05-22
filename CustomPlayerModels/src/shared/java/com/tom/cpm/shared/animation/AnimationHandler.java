@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 
 public class AnimationHandler {
@@ -45,7 +44,7 @@ public class AnimationHandler {
 		for (PlayingAnim a : currentAnimations) {
 			if(!a.finished) {
 				long currentStep = (currentTime - a.currentStart);
-				a.currentAnimation.animate(a.getTime(state, currentStep), player.get(), mode);
+				a.currentAnimation.animate(state, a.getTime(state, currentStep), player.get(), mode);
 
 				if(!a.loop && currentStep / a.currentAnimation.getDuration(mode) != a.lastFrame / a.currentAnimation.getDuration(mode)) {
 					a.finished = true;
@@ -57,9 +56,8 @@ public class AnimationHandler {
 		nextAnims.clear();
 	}
 
-	public void addAnimations(List<AnimationTrigger> next, IPose pose) {
-		Player<?> pl = player.get().getPlayerObj();
-		next.stream().filter(t -> t.canPlay(pl, mode)).forEach(t -> {
+	public void addAnimations(AnimationState state, List<AnimationTrigger> next, IPose pose) {
+		next.stream().filter(t -> t.canPlay(state, mode)).forEach(t -> {
 			for (IAnimation a : t.animations) {
 				nextAnims.add(new NextAnim(a, t));
 			}

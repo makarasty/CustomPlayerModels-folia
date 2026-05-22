@@ -125,7 +125,7 @@ public class ClientProxy extends CommonProxy {
 	public void playerRenderPost(RenderPlayer renderer) {
 		manager.unbind(renderer.modelArmor);
 		manager.unbind(renderer.modelArmorChestplate);
-		manager.unbindClear(renderer.modelBipedMain);
+		manager.unbindFlush(renderer.modelBipedMain);
 	}
 
 	public void renderSkull(ModelBase skullModel, GameProfile profile) {
@@ -160,6 +160,8 @@ public class ClientProxy extends CommonProxy {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(minecraft.isGamePaused);
 	}
 
 	public boolean onRenderName(RenderLiving renderer, EntityLiving entity, double xIn, double yIn, double zIn) {

@@ -25,6 +25,7 @@ import com.tom.cpm.client.RetroGL;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 
 @Mixin(value = MobRendererPlayer.class, remap = false)
 public class PlayerEntityRendererMixin extends MobRenderer {
@@ -48,7 +49,7 @@ public class PlayerEntityRendererMixin extends MobRenderer {
 
 	@Inject(at = @At(value = "RETURN"), method = "drawFirstPersonHand(Lnet/minecraft/core/entity/player/Player;Z)V")
 	public void onHandPost(Player player, boolean isLeft, CallbackInfo cbi) {
-		CustomPlayerModelsClient.INSTANCE.manager.unbindClear(modelBipedMain);
+		CustomPlayerModelsClient.INSTANCE.manager.unbindFlush(modelBipedMain);
 	}
 
 	@Inject(at = @At(value = "HEAD"), method = "render(Lnet/minecraft/client/render/tessellator/Tessellator;Lnet/minecraft/core/entity/player/Player;DDDFF)V")
@@ -64,11 +65,11 @@ public class PlayerEntityRendererMixin extends MobRenderer {
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/MobRendererPlayer;bindDownloadableTexture(Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/client/render/ImageParser;)Z"), method = "renderSpecials(Lnet/minecraft/core/entity/player/Player;F)V")
 	public boolean onRenderCape(MobRendererPlayer r, String string, String string2, ImageParser imageParser, Player player, float partialTicks) {
-		com.tom.cpm.shared.config.Player<?> pl = CustomPlayerModelsClient.INSTANCE.manager.getBoundPlayer();
+		ModelBiped model = modelBipedMain;
+		BoundPlayer pl = CustomPlayerModelsClient.INSTANCE.manager.getPlayerFromModel(model);
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
-				ModelBiped model = modelBipedMain;
 				CustomPlayerModelsClient.mc.getPlayerRenderManager().rebindModel(model);
 				CustomPlayerModelsClient.INSTANCE.manager.bindSkin(model, TextureSheetType.CAPE);
 				CustomPlayerModelsClient.renderCape(player, partialTicks, model, def);

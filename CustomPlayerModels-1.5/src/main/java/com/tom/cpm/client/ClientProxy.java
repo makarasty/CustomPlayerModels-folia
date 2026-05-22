@@ -134,7 +134,7 @@ public class ClientProxy extends CommonProxy {
 		if(event.isCanceled()) {
 			manager.unbind(event.renderer.modelArmor);
 			manager.unbind(event.renderer.modelArmorChestplate);
-			manager.unbindClear(event.renderer.modelBipedMain);
+			manager.unbindFlush(event.renderer.modelBipedMain);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class ClientProxy extends CommonProxy {
 	public void playerRenderPost(RenderPlayerEvent.Post event) {
 		manager.unbind(event.renderer.modelArmor);
 		manager.unbind(event.renderer.modelArmorChestplate);
-		manager.unbindClear(event.renderer.modelBipedMain);
+		manager.unbindFlush(event.renderer.modelBipedMain);
 	}
 
 	public void renderSkull(ModelBase skullModel, GameProfile profile) {
@@ -177,6 +177,8 @@ public class ClientProxy extends CommonProxy {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(minecraft.isGamePaused);
 	}
 
 	public boolean onRenderName(RenderLiving renderer, EntityLiving entity, double xIn, double yIn, double zIn) {

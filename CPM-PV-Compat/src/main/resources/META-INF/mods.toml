@@ -20,30 +20,23 @@ A Customizable Player Models, Plasmo Voice compat mod.
     ordering="NONE"
     side="BOTH"
 [[dependencies.cpmpvc]]
-    modId="neoforge"
-    mandatory=false
-    type="required"
-    versionRange="[20.2,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.cpmpvc]]
     modId="minecraft"
     mandatory=true
     type="required"
-    versionRange="[1.19.2,)"
+    versionRange="[1.16.5,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cpmpvc]]
     modId="plasmovoice"
     mandatory=true
     type="required"
-    versionRange="[2.0.0,)"
+    versionRange="[2.1.1,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.cpmpvc]]
     modId="cpm"
     mandatory=true
     type="required"
-    versionRange="*"
+    versionRange="[0.6.26a,)"
     ordering="NONE"
     side="BOTH"

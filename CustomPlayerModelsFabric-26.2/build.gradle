@@ -50,8 +50,6 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }*/
 	
-	compileOnly files("../CustomPlayerModels-26.2/stubs/of.jar")
-	
 	/*modCompileOnly('maven.modrinth:sodium:mc1.21.10-0.7.2-fabric')
 	modCompileOnly('maven.modrinth:iris:1.9.6+1.21.10-fabric')
     modImplementation("org.antlr:antlr4-runtime:4.13.1")

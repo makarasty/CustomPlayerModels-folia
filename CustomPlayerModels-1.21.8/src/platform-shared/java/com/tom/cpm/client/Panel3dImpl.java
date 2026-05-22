@@ -96,7 +96,7 @@ public class Panel3dImpl extends Panel3dNative {
 			int i = Minecraft.getInstance().getWindow().getGuiScale();
 			int j = (pipState.x1() - pipState.x0()) * i;
 			int k = (pipState.y1() - pipState.y0()) * i;
-			var proj = new Matrix4f().setOrtho(0.0F, j, k, 0f, -1000.0F, 1000.0F);
+			var proj = new Matrix4f().setOrtho(0.0F, j, k, 0.0F, 1000.0F, 11000.0F);
 			pipState.impl().proj = Mat4f.map(proj, Matrix4f::get);
 
 			try {
@@ -111,6 +111,8 @@ public class Panel3dImpl extends Panel3dNative {
 
 				int light = LightTexture.pack(15, 15);
 				panel.render(new com.tom.cpl.math.MatrixStack(), new VBuffers(rt -> new VBuffer(bufferSource.getBuffer(rt.getNativeType()), light, OverlayTexture.NO_OVERLAY, poseStack)), partialTicks);
+			} catch (Exception e) {
+				gui.onGuiException("Error drawing gui", e, true);
 			} finally {
 				poseStack.popPose();
 			}

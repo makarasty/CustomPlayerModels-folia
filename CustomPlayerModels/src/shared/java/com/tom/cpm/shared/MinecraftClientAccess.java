@@ -50,6 +50,7 @@ public interface MinecraftClientAccess {
 	Object getCurrentPlayerIDObject();
 
 	SkinType getSkinType();
+	int getEncodedGesture();
 	void setEncodedGesture(int value);
 	boolean isInGame();
 	List<IKeybind> getKeybinds();

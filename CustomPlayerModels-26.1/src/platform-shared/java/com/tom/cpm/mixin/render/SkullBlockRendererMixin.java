@@ -29,6 +29,8 @@ import com.tom.cpm.client.CPMOrderedSubmitNodeCollector.CPMSubmitNodeCollector;
 import com.tom.cpm.client.CustomPlayerModelsClient;
 import com.tom.cpm.client.ModelTexture;
 import com.tom.cpm.client.SkullBlockRenderStateAccess;
+import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.model.TextureSheetType;
 
 @Mixin(SkullBlockRenderer.class)
@@ -56,7 +58,7 @@ public abstract class SkullBlockRendererMixin implements BlockEntityRenderer<Sku
 			CPMSubmitNodeCollector.injectSNC(snc);
 
 			ModelTexture mt = new ModelTexture(sa.cpm$getSkin().body().texturePath());
-			CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), null, model, null);
+			CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), null, model, null, new AnimationState(AnimationMode.SKULL));
 			CustomPlayerModelsClient.mc.getPlayerRenderManager().bindSkin(model, mt, TextureSheetType.SKIN);
 			state.renderType = mt.getRenderType();
 		}

@@ -53,6 +53,8 @@ public class CustomPlayerModelsClient extends ClientBase implements ClientModIni
 			}
 
 			mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+			CustomPlayerModels.api.clientApi().tickListeners(minecraft.isPaused());
 		});
 		ScreenEvents.AFTER_INIT.register((mc, screen, sw, sh) -> {
 			ScreenEvents.beforeRender(screen).register((_1, _2, _3, _4, _5) -> PlayerProfile.inGui = true);

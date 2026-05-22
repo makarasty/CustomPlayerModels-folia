@@ -10,11 +10,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Avatar;
 
 import com.tom.cpm.client.PlayerRenderStateAccess;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 
 @Mixin(AvatarRenderState.class)
 public class AvatarRenderStateMixin implements PlayerRenderStateAccess {
 	private @Unique Player<Avatar> cpm$player;
+	private @Unique AnimationState cpm$animState;
 	private @Unique Component cpm$modelStatus;
 	private @Unique PartPose cpm$head;
 	private @Unique PartPose cpm$body;
@@ -31,6 +33,16 @@ public class AvatarRenderStateMixin implements PlayerRenderStateAccess {
 	@Override
 	public Player<Avatar> cpm$getPlayer() {
 		return cpm$player;
+	}
+
+	@Override
+	public void cpm$setAnimationState(AnimationState state) {
+		cpm$animState = state;
+	}
+
+	@Override
+	public AnimationState cpm$getAnimationState() {
+		return cpm$animState;
 	}
 
 	@Override

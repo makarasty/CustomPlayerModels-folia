@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
 
 import com.tom.cpl.tag.TagManager;
 import com.tom.cpm.shared.MinecraftObjectHolder;
@@ -24,23 +25,19 @@ import com.tom.cpm.shared.util.ErrorLog.LogLevel;
 
 public class CPMTagLoader extends ReloadListener<Map<String, List<Map<String, Object>>>> {
 	private final TagManager<?> tags;
-	private final String prefix;
+	protected final String prefix;
+	protected final ResourceLocation id;
 
-	public CPMTagLoader(Minecraft mc, TagManager<?> tags, String prefix) {
+	public CPMTagLoader(Consumer<CPMTagLoader> mc, TagManager<?> tags, String prefix) {
 		this.tags = tags;
 		this.prefix = prefix;
-		IResourceManager mngr = mc.getResourceManager();
-		if (mngr != null) {
-			init(mngr);
-		} else {
-			mc.tell(() -> init(mc.getResourceManager()));
-		}
+		this.id = new ResourceLocation("cpm", "tags_" + prefix);
+		mc.accept(this);
 	}
 
-	private void init(IResourceManager mngr) {
+	public void initAndRegister(IReloadableResourceManager mngr) {
 		tags.applyBuiltin(load(mngr), prefix);
-		if(mngr instanceof IReloadableResourceManager)
-			((IReloadableResourceManager)mngr).registerReloadListener(this);
+		mngr.registerReloadListener(this);
 	}
 
 	@Override

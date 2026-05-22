@@ -22,7 +22,7 @@ public class AnimationNew implements IAnimation {
 	}
 
 	@Override
-	public void animate(long millis, ModelDefinition def, AnimationMode mode) {
+	public void animate(AnimationState state, long millis, ModelDefinition def, AnimationMode mode) {
 		float step = (float) millis % duration / duration;
 		for (int i = 0; i < handlers.size(); i++) {
 			AnimationDriver p = handlers.get(i);

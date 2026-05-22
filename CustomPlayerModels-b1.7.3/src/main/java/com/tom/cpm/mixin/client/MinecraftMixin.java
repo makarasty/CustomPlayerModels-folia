@@ -109,7 +109,8 @@ public abstract class MinecraftMixin {
 
 	@Inject(at = @At("HEAD"), method = "isCommand(Ljava/lang/String;)Z", cancellable = true)
 	public void isCommand(String command, CallbackInfoReturnable<Boolean> cbi) {
-		if (!isWorldRemote())cbi.setReturnValue(true);
+		if (isWorldRemote())return;
+		cbi.setReturnValue(true);
 		if (command.startsWith("/")) {
 			SinglePlayerCommands.executeCommand((Minecraft) (Object) this, command);
 		} else {

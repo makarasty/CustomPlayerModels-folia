@@ -295,7 +295,18 @@ public class CPMTransformerService implements IClassTransformer {
 									lst.add(new VarInsnNode(Opcodes.ALOAD, 0));
 									lst.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/entity/layers/LayerCustomHead", RENDER_PLAYER_FIELD, "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
 									method.instructions.insert(fn.getNext(), lst);
-									LOG.info("CPM RenderPlayer Hook: injected");
+									LOG.info("CPM RenderPlayer (CustomHead) Hook: injected");
+								}
+							} else if(insnNode instanceof MethodInsnNode) {
+								MethodInsnNode type = (MethodInsnNode) insnNode;
+								if (type.desc.equals(Type.getMethodDescriptor(Type.VOID_TYPE, Type.getArgumentTypes(method.desc)[0]))) {
+									LOG.info("CPM RenderPlayer Hook: Found LayerEntityOnShoulder constructor");
+									InsnList lst = new InsnList();
+									lst.add(new InsnNode(Opcodes.DUP));
+									lst.add(new VarInsnNode(Opcodes.ALOAD, 0));
+									lst.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/entity/layers/LayerEntityOnShoulder", RENDER_PLAYER_FIELD, "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
+									method.instructions.insert(type, lst);
+									LOG.info("CPM RenderPlayer (Parrot) Hook: injected");
 								}
 							}
 						}
@@ -591,6 +602,8 @@ public class CPMTransformerService implements IClassTransformer {
 
 			@Override
 			public ClassNode apply(ClassNode input) {
+				input.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, RENDER_PLAYER_FIELD, "Lnet/minecraft/client/renderer/entity/RenderPlayer;", null, 0));
+
 				for(MethodNode method : input.methods) {
 					if((method.name.equals("a") && method.desc.equals("(Laed;Ljava/util/UUID;Lfy;Lcaa;Lbqf;Lnf;Ljava/lang/Class;FFFFFFFZ)Lcca$a;")) || method.name.equals("renderEntityOnShoulder")) {
 						LOG.info("CPM Parrot Hook: Found renderEntityOnShoulder method");
@@ -601,9 +614,11 @@ public class CPMTransformerService implements IClassTransformer {
 								if(mn.desc.equals("()V") && (mn.name.equals("pushMatrix") || (mn.name.equals("G") && mn.owner.equals("bus")))) {
 									LOG.info("CPM Parrot Hook: Found pushMatrix method");
 									InsnList lst = new InsnList();
+									lst.add(new VarInsnNode(Opcodes.ALOAD, 0));
+									lst.add(new FieldInsnNode(Opcodes.GETFIELD, input.name, RENDER_PLAYER_FIELD, "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
 									lst.add(new VarInsnNode(Opcodes.ALOAD, 1));
 									lst.add(new VarInsnNode(Opcodes.ILOAD, 15));
-									lst.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onRenderParrot", "(Lnet/minecraft/entity/player/EntityPlayer;Z)V", false));
+									lst.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onRenderParrot", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/entity/player/EntityPlayer;Z)V", false));
 									method.instructions.insert(mn, lst);
 									LOG.info("CPM Parrot Hook: injected");
 								}
@@ -611,6 +626,7 @@ public class CPMTransformerService implements IClassTransformer {
 						}
 					}
 				}
+
 				return input;
 			}
 		});

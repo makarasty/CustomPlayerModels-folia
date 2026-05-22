@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.tom.cpm.shared.animation.AnimationRegistry;
 import com.tom.cpm.shared.definition.ModelDefinition;
+import com.tom.cpm.shared.parts.anim.menu.CommandAction;
 
 public class OSCMessageManager {
 	private Map<String, Set<OSCMapping>> mappings = new ConcurrentHashMap<>();
@@ -17,7 +18,7 @@ public class OSCMessageManager {
 		this.mappings.clear();
 		Set<OSCMapping> mappings = new HashSet<>();
 		AnimationRegistry ar = def.getAnimations();
-		ar.getCommandActionsMap().values().stream().filter(CPMOSC::isCommandControlledTemp).filter(p -> p.getName().startsWith("osc:/")).forEach(p -> {
+		ar.getCommandActionsMap().values().stream().filter(CommandAction::isCommandControlled).filter(p -> p.getName().startsWith("osc:/")).forEach(p -> {
 			OSCMapping m = new OSCMapping(p);
 			if(m.getOscPacketId() != null)
 				mappings.add(m);

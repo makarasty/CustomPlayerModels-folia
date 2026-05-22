@@ -24,9 +24,9 @@ public class ResourceGen {
 		try {
 			boolean dev = mode.equals("Dev");
 			run(new File(wd, "../CustomPlayerModels/src/shared/resources"));
-			run(new File(wd, "../CustomPlayerModels-EditorWeb/src/main/resources"));
-			if(mode.equals("Blockbench") || dev)run(new File(wd, "../CustomPlayerModels-EditorWeb/src/blockbench/resources"));
-			if(mode.equals("FBXTool") || dev)run(new File(wd, "../CustomPlayerModels-EditorWeb/src/fbxtool/resources"));
+			run(new File(wd, "src/main/resources"));
+			if(mode.equals("Blockbench") || dev)run(new File(wd, "src/blockbench/resources"));
+			if(mode.equals("FBXTool") || dev)run(new File(wd, "src/fbxtool/resources"));
 			pf.save(baos);
 		} catch (IOException e) {
 			e.printStackTrace();

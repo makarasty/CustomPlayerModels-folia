@@ -27,12 +27,12 @@ A Customizable Player Models, Simple Voice Chat compat mod.
 [[dependencies.cpmsvcc]]
     modId="voicechat"
     type="required"
-    versionRange="[1.20.5-${voicechat_dependency},)"
+    versionRange="[1.20.5-${project.voicechat_api_version},)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.cpmsvcc]]
     modId="cpm"
     type="required"
-    versionRange="*"
+    versionRange="[0.6.26a,)"
     ordering="NONE"
     side="BOTH"

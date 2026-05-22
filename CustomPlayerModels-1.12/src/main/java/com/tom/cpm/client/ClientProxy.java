@@ -119,12 +119,12 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public void playerRenderPreC(RenderPlayerEvent.Pre event) {
-		if(event.isCanceled())manager.unbindClear(event.getRenderer().getMainModel());
+		if(event.isCanceled())manager.unbindFlush(event.getRenderer().getMainModel());
 	}
 
 	@SubscribeEvent
 	public void playerRenderPost(RenderPlayerEvent.Post event) {
-		manager.unbindClear(event.getRenderer().getMainModel());
+		manager.unbindFlush(event.getRenderer().getMainModel());
 	}
 
 	@SubscribeEvent
@@ -206,6 +206,8 @@ public class ClientProxy extends CommonProxy {
 		}
 
 		mc.getPlayerRenderManager().getAnimationEngine().updateKeys(KeyBindings.quickAccess);
+
+		CustomPlayerModels.api.clientApi().tickListeners(minecraft.isGamePaused());
 	}
 
 	@SubscribeEvent

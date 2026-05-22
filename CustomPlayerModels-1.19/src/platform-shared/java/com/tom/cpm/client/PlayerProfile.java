@@ -13,7 +13,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -35,6 +34,7 @@ import com.tom.cpm.common.EntityTypeHandlerImpl;
 import com.tom.cpm.common.PlayerInventory;
 import com.tom.cpm.common.WorldImpl;
 import com.tom.cpm.mixinplugin.FPMDetector;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.model.SkinType;
 import com.tom.cpm.shared.model.render.PlayerModelSetup.ArmPose;
@@ -105,7 +105,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 	}
 
 	@Override
-	public void updateFromPlayer(net.minecraft.world.entity.player.Player player) {
+	public void updateFromPlayer(AnimationState animState, net.minecraft.world.entity.player.Player player) {
 		Pose p = player.getPose();
 		animState.resetPlayer();
 		switch (p) {
@@ -138,12 +138,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 		animState.pitch = player.getXRot();
 		animState.bodyYaw = player.yBodyRot;
 
-		if(player.isModelPartShown(PlayerModelPart.HAT))animState.encodedState |= 1;
-		if(player.isModelPartShown(PlayerModelPart.JACKET))animState.encodedState |= 2;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG))animState.encodedState |= 4;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG))animState.encodedState |= 8;
-		if(player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE))animState.encodedState |= 16;
-		if(player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE))animState.encodedState |= 32;
+		animState.encodedState = MinecraftObject.LAYER_CODEC.getValue(player::isModelPartShown);
 
 		ItemStack is = player.getItemBySlot(EquipmentSlot.HEAD);
 		animState.hasSkullOnHead = is.getItem() instanceof BlockItem && ((BlockItem)is.getItem()).getBlock() instanceof AbstractSkullBlock;
@@ -184,7 +179,7 @@ public class PlayerProfile extends Player<net.minecraft.world.entity.player.Play
 	}
 
 	@Override
-	public void updateFromModel(Object model) {
+	public void updateFromModel(AnimationState animState, Object model) {
 		if(model instanceof PlayerModel) {
 			PlayerModel m = (PlayerModel) model;
 			animState.resetModel();

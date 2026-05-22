@@ -335,6 +335,7 @@ public class BlockbenchImport {
 					pos = pos.sub(addPos);
 					rot = rot.sub(addRot);
 				}
+				pos.x *= -1;
 				pos.y *= -1;
 				rot.x *= -1;
 				rot.y *= -1;

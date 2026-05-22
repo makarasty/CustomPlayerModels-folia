@@ -24,10 +24,10 @@ import com.tom.cpm.client.ClientProxy;
 import com.tom.cpm.client.PlayerRenderManager;
 import com.tom.cpm.client.RetroGL;
 import com.tom.cpm.shared.MinecraftObjectHolder;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 import com.tom.cpm.shared.network.NetH;
 
 public class CPMASMClientHooks {
@@ -100,12 +100,12 @@ public class CPMASMClientHooks {
 	}
 
 	public static boolean renderCape(LayerCape this0, AbstractClientPlayer player, float partialTicks) {
-		Player<?> pl = ClientProxy.INSTANCE.manager.getBoundPlayer();
+		ModelPlayer model = this0.playerRenderer.getMainModel();
+		BoundPlayer pl = ClientProxy.INSTANCE.manager.getPlayerFromModel(model);
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
 				if(!player.isInvisible() && player.isWearing(EnumPlayerModelParts.CAPE)) {
-					ModelPlayer model = this0.playerRenderer.getMainModel();
 					ClientProxy.mc.getPlayerRenderManager().rebindModel(model);
 					ClientProxy.INSTANCE.manager.bindSkin(model, TextureSheetType.CAPE);
 					ClientProxy.renderCape(player, partialTicks, model, def);
@@ -126,7 +126,7 @@ public class CPMASMClientHooks {
 	}
 
 	public static void onHandRightPost(RenderPlayer this0, AbstractClientPlayer player) {
-		ClientProxy.INSTANCE.manager.unbindClear(this0.getMainModel());
+		ClientProxy.INSTANCE.manager.unbindFlush(this0.getMainModel());
 	}
 
 	public static void onHandLeftPre(RenderPlayer this0, AbstractClientPlayer player) {
@@ -135,7 +135,7 @@ public class CPMASMClientHooks {
 	}
 
 	public static void onHandLeftPost(RenderPlayer this0, AbstractClientPlayer player) {
-		ClientProxy.INSTANCE.manager.unbindClear(this0.getMainModel());
+		ClientProxy.INSTANCE.manager.unbindFlush(this0.getMainModel());
 	}
 
 	public static boolean onRenderPlayerModel(RenderPlayer this0, EntityLivingBase player0, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {

@@ -28,7 +28,7 @@ public abstract class PlayerRendererMixinFabric extends LivingEntityRenderer<Abs
 	public void cpm$renderPre(LivingEntityRenderState state, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
 		PlayerRenderStateAccess sa = (PlayerRenderStateAccess) state;
 		if (sa.cpm$getPlayer() != null) {
-			CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), multiBufferSource, getModel(), null);
+			CustomPlayerModelsClient.INSTANCE.manager.bindPlayerState(sa.cpm$getPlayer(), multiBufferSource, getModel(), null, sa.cpm$getAnimationState());
 		}
 	}
 

@@ -31,11 +31,11 @@ import com.tom.cpm.client.ClientProxy;
 import com.tom.cpm.client.PlayerRenderManager;
 import com.tom.cpm.client.RetroGL;
 import com.tom.cpm.shared.MinecraftObjectHolder;
-import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinition;
 import com.tom.cpm.shared.model.RootModelType;
 import com.tom.cpm.shared.model.TextureSheetType;
 import com.tom.cpm.shared.model.render.ItemTransform;
+import com.tom.cpm.shared.model.render.ModelRenderManager.BoundPlayer;
 import com.tom.cpm.shared.network.NetH;
 
 public class CPMASMClientHooks {
@@ -118,13 +118,13 @@ public class CPMASMClientHooks {
 	}
 
 	public static boolean renderCape(LayerCape this0, AbstractClientPlayer player, float partialTicks) {
-		Player<?> pl = ClientProxy.INSTANCE.manager.getBoundPlayer();
+		ModelPlayer model = this0.playerRenderer.getMainModel();
+		BoundPlayer pl = ClientProxy.INSTANCE.manager.getPlayerFromModel(model);
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null && def.hasRoot(RootModelType.CAPE)) {
 				ItemStack chestplate = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 				if(!player.isInvisible() && player.isWearing(EnumPlayerModelParts.CAPE) && chestplate.getItem() != Items.ELYTRA) {
-					ModelPlayer model = this0.playerRenderer.getMainModel();
 					ClientProxy.mc.getPlayerRenderManager().rebindModel(model);
 					ClientProxy.INSTANCE.manager.bindSkin(model, TextureSheetType.CAPE);
 					ClientProxy.renderCape(player, partialTicks, model, def);
@@ -145,7 +145,7 @@ public class CPMASMClientHooks {
 	}
 
 	public static void onHandRightPost(RenderPlayer this0, AbstractClientPlayer player) {
-		ClientProxy.INSTANCE.manager.unbindClear(this0.getMainModel());
+		ClientProxy.INSTANCE.manager.unbindFlush(this0.getMainModel());
 	}
 
 	public static void onHandLeftPre(RenderPlayer this0, AbstractClientPlayer player) {
@@ -154,13 +154,14 @@ public class CPMASMClientHooks {
 	}
 
 	public static void onHandLeftPost(RenderPlayer this0, AbstractClientPlayer player) {
-		ClientProxy.INSTANCE.manager.unbindClear(this0.getMainModel());
+		ClientProxy.INSTANCE.manager.unbindFlush(this0.getMainModel());
 	}
 
-	public static void onRenderParrot(EntityPlayer entitylivingbaseIn, boolean leftShoulderIn) {
-		Player<?> pl = ClientProxy.INSTANCE.manager.getBoundPlayer();
+	public static void onRenderParrot(RenderPlayer renderer, EntityPlayer entitylivingbaseIn, boolean leftShoulderIn) {
+		ModelPlayer model = renderer.getMainModel();
+		BoundPlayer pl = ClientProxy.INSTANCE.manager.getPlayerFromModel(model);
 		if(pl != null) {
-			ModelDefinition def = pl.getModelDefinition();
+			ModelDefinition def = pl.definition;
 			if(def != null) {
 				ItemTransform tr = def.getTransform(leftShoulderIn ? ItemSlot.LEFT_SHOULDER : ItemSlot.RIGHT_SHOULDER);
 				if(tr != null) {

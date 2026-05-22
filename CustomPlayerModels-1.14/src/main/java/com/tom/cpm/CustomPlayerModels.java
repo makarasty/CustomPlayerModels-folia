@@ -3,7 +3,6 @@ package com.tom.cpm;
 import java.io.File;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.function.Supplier;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,8 +21,9 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.versions.forge.ForgeVersion;
 
 import com.tom.cpl.config.ModConfigFile;
-import com.tom.cpm.api.ICPMPlugin;
+import com.tom.cpm.api.CPMPlugin;
 import com.tom.cpm.client.CustomPlayerModelsClient;
+import com.tom.cpm.common.AnnotationFinder;
 import com.tom.cpm.common.ServerHandler;
 import com.tom.cpm.shared.MinecraftObjectHolder;
 import com.tom.cpm.shared.PlatformFeature;
@@ -45,6 +45,9 @@ public class CustomPlayerModels extends CommonBase {
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		CustomPlayerModelsClient.INSTANCE.init();
+		event.getMinecraftSupplier().get().tell(() -> {
+			CustomPlayerModelsClient.INSTANCE.registerReloadListeners();
+		});
 	}
 
 	public void setup(FMLCommonSetupEvent evt) {
@@ -53,19 +56,13 @@ public class CustomPlayerModels extends CommonBase {
 		LOG.info("Customizable Player Models Initialized");
 	}
 
-	@SuppressWarnings("unchecked")
 	private void processIMC(final InterModProcessEvent event) {
 		event.getIMCStream().forEach(m -> {
-			try {
-				if(m.getMethod().equals("api")) {
-					ICPMPlugin plugin = ((Supplier<ICPMPlugin>) m.getMessageSupplier().get()).get();
-					api.register(plugin);
-				}
-			} catch (Throwable e) {
-				LOG.error("Mod {} provides a broken implementation of CPM api", m.getSenderModId(), e);
+			if(m.getMethod().equals("api")) {
+				api.registerSupplier(m.getSenderModId(), m.getMessageSupplier());
 			}
 		});
-		LOG.info("Customizable Player Models IMC processed: " + api.getPluginStatus());
+		AnnotationFinder.getInstances(CPMPlugin.class).forEach(api::registerPluginClass);
 		apiInit();
 		if (FMLEnvironment.dist == Dist.CLIENT) CustomPlayerModelsClient.apiInit();
 	}

@@ -46,7 +46,9 @@ public class WebEmbeddedEditor implements EmbeddedEditor {
 
 			EventListener eb = evIn -> {
 				MessageEvent<Object> event = (MessageEvent<Object>) evIn;
-				if (event.origin != window.location.origin) return;
+				if (event.origin != window.location.origin &&
+						!("null".equals(event.origin) && "file://".equals(window.location.origin))
+						) return;
 				Message msg = Js.uncheckedCast(event.data);
 				if (msg.id != null) {
 					Consumer<Message> mc = listeners.get(msg.id);
@@ -115,7 +117,9 @@ public class WebEmbeddedEditor implements EmbeddedEditor {
 	public void onReady() {
 		DomGlobal.window.addEventListener("message", evIn -> {
 			MessageEvent<Object> event = (MessageEvent<Object>) evIn;
-			if (event.origin != DomGlobal.window.location.origin) return;
+			if (event.origin != DomGlobal.window.location.origin &&
+					!("null".equals(event.origin) && "file://".equals(DomGlobal.window.location.origin))
+					) return;
 			Message msg = Js.uncheckedCast(event.data);
 			if (msg.id != null) {
 				Consumer<Message> mc = listeners.get(msg.id);

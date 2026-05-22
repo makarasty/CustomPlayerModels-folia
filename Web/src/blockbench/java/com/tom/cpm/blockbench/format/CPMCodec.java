@@ -51,6 +51,7 @@ public class CPMCodec {
 		prop.load_filter.extensions = new String[] {"cpmproject"};
 		prop.export = ProjectConvert::export;
 		prop.write = (content, path) -> {
+			if (content == Js.uncheckedCast(""))return;
 			WriteProperties pr = new WriteProperties();
 			pr.content = content;
 			pr.savetype = "zip";

@@ -2,6 +2,7 @@ package com.tom.cpm;
 
 import java.io.File;
 import java.util.EnumSet;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +34,8 @@ import com.tom.cpl.text.TextRemapper;
 import com.tom.cpl.text.TextStyle;
 import com.tom.cpl.util.ILogger;
 import com.tom.cpm.api.CPMApiManager;
-import com.tom.cpm.api.ICPMPlugin;
+import com.tom.cpm.api.CPMPlugin;
+import com.tom.cpm.common.AnnotationFinder;
 import com.tom.cpm.common.BlockStateHandlerImpl;
 import com.tom.cpm.common.Command;
 import com.tom.cpm.common.EntityTypeHandlerImpl;
@@ -59,6 +61,8 @@ public class CustomPlayerModels implements MinecraftCommonAccess {
 	public static final ILogger log = new Log4JLogger(LOG);
 	public static CPMApiManager api;
 
+	private Set<String> pluginClasses;
+
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {
 		api = new CPMApiManager();
@@ -70,15 +74,12 @@ public class CustomPlayerModels implements MinecraftCommonAccess {
 	@EventHandler
 	public void processIMC(IMCEvent event) {
 		event.getMessages().forEach(m -> {
-			try {
-				if(m.key.equals("api")) {
-					ICPMPlugin plugin = (ICPMPlugin) Class.forName(m.getStringValue()).newInstance();
-					api.register(plugin);
-				}
-			} catch (Throwable e) {
-				LOG.error("Mod {} provides a broken implementation of CPM api", m.getSender(), e);
+			if(m.key.equals("api")) {
+				pluginClasses.add(m.getStringValue());
 			}
 		});
+		pluginClasses.forEach(api::registerPluginClass);
+		pluginClasses = null;
 		LOG.info("Customizable Player Models IMC processed: " + api.getPluginStatus());
 		api.buildCommon().player(EntityPlayer.class).init();
 		proxy.apiInit();
@@ -102,6 +103,7 @@ public class CustomPlayerModels implements MinecraftCommonAccess {
 	public void preInit(FMLPreInitializationEvent evt) {
 		cfg = new ModConfigFile(new File(evt.getModConfigurationDirectory(), "cpm.json"));
 		MinecraftObjectHolder.setCommonObject(this);
+		pluginClasses = AnnotationFinder.getInstances(evt.getAsmData(), CPMPlugin.class);
 	}
 
 	@Override

@@ -15,9 +15,6 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
-	"client": [
-		"com.tom.cpmoscc.CPMOSCClientFabric"
-	],
     "cpmapi": [
     	"com.tom.cpmoscc.CPMOSCPlugin"
     ]
@@ -28,6 +25,6 @@
     "fabricloader": ">=0.7.4",
     "minecraft": ">=1.14.4",
     "fabric": "*",
-	"cpm": "*"
+	"cpm": ">=0.6.26a"
   }
 }

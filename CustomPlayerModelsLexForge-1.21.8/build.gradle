@@ -173,6 +173,7 @@ dependencies {
 	compileOnly files("../CustomPlayerModels-1.21.8/stubs/iris.jar")
 	compileOnly files("../CustomPlayerModels-1.21.8/stubs/fpm.jar")
 	compileOnly files("../CustomPlayerModels-1.21.8/stubs/vc.jar")
+    compileOnly files("../CustomPlayerModels-1.21.8/stubs/realcamera.jar")
     
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
         jarJar.ranged(it, "[0.4.1,)")
