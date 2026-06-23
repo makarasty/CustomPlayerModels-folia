@@ -1,31 +1,27 @@
 package com.tom.cpm.client;
 
 import java.util.List;
-import java.util.function.Function;
 
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector.CustomGeometryRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector.ParticleGroupRenderer;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState.LeashState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState.ShadowPiece;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.gizmos.DrawableGizmoPrimitives.Group;
 import net.minecraft.client.renderer.item.ItemStackRenderState.FoilType;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
@@ -127,13 +123,6 @@ public class CPMOrderedSubmitNodeCollector implements OrderedSubmitNodeCollector
 	}
 
 	@Override
-	public void submitNameTag(PoseStack poseStack, @Nullable Vec3 nameTagAttachment, int offset, Component name,
-			boolean seeThrough, int lightCoords, double distanceToCameraSq, CameraRenderState camera) {
-		collector.submitNameTag(poseStack, nameTagAttachment, offset, name, seeThrough, lightCoords, distanceToCameraSq,
-				camera);
-	}
-
-	@Override
 	public void submitText(PoseStack poseStack, float x, float y, FormattedCharSequence string, boolean dropShadow,
 			DisplayMode displayMode, int lightCoords, int color, int backgroundColor, int outlineColor) {
 		collector.submitText(poseStack, x, y, string, dropShadow, displayMode, lightCoords, color, backgroundColor,
@@ -166,19 +155,9 @@ public class CPMOrderedSubmitNodeCollector implements OrderedSubmitNodeCollector
 	}
 
 	@Override
-	public void submitMovingBlock(PoseStack poseStack, MovingBlockRenderState movingBlockRenderState) {
-		collector.submitMovingBlock(poseStack, movingBlockRenderState);
-	}
-
-	@Override
 	public void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts,
 			int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 		collector.submitBlockModel(poseStack, renderType, parts, tintLayers, lightCoords, overlayCoords, outlineColor);
-	}
-
-	@Override
-	public void submitBreakingBlockModel(PoseStack poseStack, BlockStateModel model, long seed, int progress) {
-		collector.submitBreakingBlockModel(poseStack, model, seed, progress);
 	}
 
 	@Override
@@ -195,28 +174,35 @@ public class CPMOrderedSubmitNodeCollector implements OrderedSubmitNodeCollector
 	}
 
 	@Override
-	public void submitParticleGroup(ParticleGroupRenderer particleGroupRenderer) {
-		collector.submitParticleGroup(particleGroupRenderer);
-	}
-
-	@Override
-	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction,
-			boolean translucent, List<BlockStateModelPart> parts, @Nullable Mesh mesh, int[] tintLayers,
-			int lightCoords, int overlayCoords, int outlineColor) {
-		collector.submitBlockModel(poseStack, renderTypeFunction, translucent, parts, mesh, tintLayers, lightCoords,
-				overlayCoords, outlineColor);
-	}
-
-	@Override
-	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords,
-			int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, FoilType foilType) {
-		collector.submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, tintLayers, quads,
-				mesh, foilType);
-	}
-
-	@Override
 	public void submitShapeOutline(PoseStack poseStack, VoxelShape shape, RenderType renderType, int color, float width,
 			boolean afterTerrain) {
 		collector.submitShapeOutline(poseStack, shape, renderType, color, width, afterTerrain);
+	}
+
+	@Override
+	public void submitNameTag(PoseStack poseStack, @Nullable Vec3 nameTagAttachment, int offset, Component name,
+			boolean seeThrough, int lightCoords, CameraRenderState camera) {
+		collector.submitNameTag(poseStack, nameTagAttachment, offset, name, seeThrough, lightCoords, camera);
+	}
+
+	@Override
+	public void submitMovingBlock(PoseStack poseStack, MovingBlockRenderState movingBlockRenderState,
+			int outlineColor) {
+		collector.submitMovingBlock(poseStack, movingBlockRenderState, outlineColor);
+	}
+
+	@Override
+	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, int progress) {
+		collector.submitBreakingBlockModel(poseStack, parts, progress);
+	}
+
+	@Override
+	public void submitQuadParticleGroup(QuadParticleRenderState particles) {
+		collector.submitQuadParticleGroup(particles);
+	}
+
+	@Override
+	public void submitGizmoPrimitives(Group group, CameraRenderState camera, boolean onTop) {
+		collector.submitGizmoPrimitives(group, camera, onTop);
 	}
 }

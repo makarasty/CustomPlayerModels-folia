@@ -78,7 +78,7 @@ public class Panel3dImpl extends Panel3dNative {
 				SubmitNodeCollector submitNodeCollector) {
 			float partialTicks = 0f;
 			var mc = Minecraft.getInstance();
-			mc.gameRenderer.getLighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
+			mc.gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
 			var panel = pipState.impl().panel;
 			GuiImpl gui = panel.getGui().getNativeGui();
 
@@ -95,7 +95,7 @@ public class Panel3dImpl extends Panel3dNative {
 			int i = mc.getWindow().getGuiScale();
 			int j = (pipState.x1() - pipState.x0()) * i;
 			int k = (pipState.y1() - pipState.y0()) * i;
-			var proj = new Matrix4f().setOrtho(0.0F, j, k, 0f, -1000.0F, 1000.0F);
+			var proj = new Matrix4f().setOrtho(0.0F, j, k, 0.0F, 1000.0F, 11000.0F);
 			pipState.impl().proj = Mat4f.map(proj, Matrix4f::get);
 
 			try {

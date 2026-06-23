@@ -3,6 +3,7 @@ package com.tom.cpm.client;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.LayeringTransform;
 import net.minecraft.client.renderer.rendertype.OutputTarget;
@@ -12,13 +13,13 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 public class CustomRenderTypes {
 	public static final Supplier<RenderPipeline> EYES = Platform.registerPipeline(() -> {
@@ -29,10 +30,11 @@ public class CustomRenderTypes {
 				.withShaderDefine("EMISSIVE")
 				.withShaderDefine("NO_OVERLAY")
 				.withShaderDefine("NO_CARDINAL_LIGHTING")
-				.withSampler("Sampler0")
+				.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
 				.withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+				.withVertexBinding(0, DefaultVertexFormat.ENTITY)
+				.withPrimitiveTopology(PrimitiveTopology.QUADS)
 				.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
-				.withVertexFormat(DefaultVertexFormat.ENTITY, Mode.QUADS)
 				.build();
 	});
 

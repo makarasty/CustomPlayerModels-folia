@@ -37,6 +37,7 @@ import com.tom.cpm.client.ModelTexture;
 import com.tom.cpm.client.PlayerProfile;
 import com.tom.cpm.client.PlayerRenderStateAccess;
 import com.tom.cpm.shared.animation.AnimationEngine.AnimationMode;
+import com.tom.cpm.shared.animation.AnimationState;
 import com.tom.cpm.shared.config.Player;
 import com.tom.cpm.shared.definition.ModelDefinitionLoader;
 import com.tom.cpm.shared.model.TextureSheetType;
@@ -79,7 +80,6 @@ extends LivingEntityRenderer<AvatarlikeEntity, AvatarRenderState, PlayerModel> i
 						sa.cpm$getModelStatus(),
 						!avatarRenderState.isDiscrete,
 						avatarRenderState.lightCoords,
-						avatarRenderState.distanceToCameraSq,
 						cameraRenderState);
 				poseStack.popPose();
 			}
@@ -117,10 +117,12 @@ extends LivingEntityRenderer<AvatarlikeEntity, AvatarRenderState, PlayerModel> i
 		}
 		FormatText st = CustomPlayerModelsClient.INSTANCE.manager.getStatus(profile, unique);
 		sa.cpm$setModelStatus(st != null ? st.remap() : null);
-		var pl = CustomPlayerModelsClient.INSTANCE.manager.loadPlayerState(profile, abstractClientPlayer, unique, AnimationMode.PLAYER);
+		AnimationState state = new AnimationState(AnimationMode.PLAYER);
+		var pl = CustomPlayerModelsClient.INSTANCE.manager.loadPlayerState(profile, abstractClientPlayer, unique, state);
 		sa.cpm$setPlayer(pl);
+		sa.cpm$setAnimationState(state);
 		if (pl != null) {
-			((PlayerProfile) pl).updateFromState(playerRenderState);
+			((PlayerProfile) pl).updateFromState(state, playerRenderState);
 		}
 	}
 

@@ -109,7 +109,7 @@ public class GuiImpl extends Screen implements IGui {
 			onGuiException("Error drawing gui", e, true);
 		} finally {
 			String modVer = MinecraftCommonAccess.get().getModVersion();
-			String s = "Minecraft " + SharedConstants.getCurrentVersion().name() + " (" + minecraft.getLaunchedVersion() + "/" + ClientBrandRetriever.getClientModName() + ("release".equalsIgnoreCase(minecraft.getVersionType()) ? "" : "/" + minecraft.getVersionType()) + ") " + modVer;
+			String s = "Minecraft " + SharedConstants.getCurrentVersion().name() + " (" + minecraft.getLaunchedVersion() + "/" + ClientBrandRetriever.getClientModName() + ") " + modVer;
 			graphics.text(font, s, width - font.width(s) - 4, 2, 0xff000000, false);
 			s = minecraft.getFps() + " FPS";
 			graphics.text(font, s, width - font.width(s) - 4, 11, 0xff000000, false);

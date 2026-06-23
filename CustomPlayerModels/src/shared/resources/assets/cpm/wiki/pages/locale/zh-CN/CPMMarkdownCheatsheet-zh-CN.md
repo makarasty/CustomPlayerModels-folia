@@ -113,6 +113,10 @@
 <a name="lists"/>
 
 ## Lists
+> [!NOTE]
+> 本章可能已过时。
+> 查看本页的英文版本：[跳转](https://github.com/tom5454/CustomPlayerModels/wiki/CPMMarkdownCheatsheet#lists)
+
 
 （在此示例中，前导空格和尾随空格用点表示：⋅）
 

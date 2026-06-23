@@ -3,10 +3,10 @@
   "doNotEdit2": "Used by 1.12 and older versions of Minecraft",
   "item": [
     "axes",
-    "hoes",
+    "tools",
     "pickaxes",
     "shovels",
-    "swords",
-    "tools"
+    "hoes",
+    "swords"
   ]
 }

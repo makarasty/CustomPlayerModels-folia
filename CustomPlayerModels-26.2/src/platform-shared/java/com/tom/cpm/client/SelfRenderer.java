@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Unit;
@@ -24,11 +25,19 @@ public interface SelfRenderer {
 		}
 
 		public BiConsumer<NativeRenderType, RecordBuffer> recordBuffer() {
-			return (rt, rb) -> {
-				RenderType nrt = rt.getNativeType();
-				if (nrt == null)nrt = defaultRt;
-				collector.submitModel(new CustomModelLayer(rb, lw), Unit.INSTANCE, pose, nrt, light, overlay, tint, sprite, outline, null);
-			};
+			if (collector instanceof SubmitNodeCollector snc) {
+				return (rt, rb) -> {
+					RenderType nrt = rt.getNativeType();
+					if (nrt == null)nrt = defaultRt;
+					snc.order(rt.getLayer()).submitModel(new CustomModelLayer(rb, lw), Unit.INSTANCE, pose, nrt, light, overlay, tint, sprite, outline, null);
+				};
+			} else {
+				return (rt, rb) -> {
+					RenderType nrt = rt.getNativeType();
+					if (nrt == null)nrt = defaultRt;
+					collector.submitModel(new CustomModelLayer(rb, lw), Unit.INSTANCE, pose, nrt, light, overlay, tint, sprite, outline, null);
+				};
+			}
 		}
 
 		public void storeState(PlayerModel pm) {

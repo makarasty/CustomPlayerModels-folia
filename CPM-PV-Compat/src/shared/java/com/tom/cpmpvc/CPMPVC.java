@@ -10,14 +10,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import com.tom.cpm.api.IClientAPI.MessageSender;
 import com.tom.cpm.shared.MinecraftClientAccess;
 
 public class CPMPVC {
 	public static final String MOD_ID = "cpmpvc";
 	public static final Logger LOGGER = LogManager.getLogger("CPM-PV Compat");
 	private static final LoadingCache<UUID, Float> voiceLevelsCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build(CacheLoader.from(() -> 0f));
-	public static MessageSender mutedSender;
 
 	public static float get(UUID uuid) {
 		try {

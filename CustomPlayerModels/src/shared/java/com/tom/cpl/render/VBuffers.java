@@ -72,6 +72,10 @@ public class VBuffers {
 		public <RT> RT getNativeType() {
 			return (RT) nativeType;
 		}
+
+		public int getLayer() {
+			return layer;
+		}
 	}
 
 	public VBuffers replay() {
