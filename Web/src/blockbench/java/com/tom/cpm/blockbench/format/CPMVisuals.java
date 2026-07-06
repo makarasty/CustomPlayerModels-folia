@@ -24,8 +24,8 @@ import com.tom.cpm.blockbench.proxy.Timeline;
 import com.tom.cpm.blockbench.proxy.Vectors.JsVec3;
 import com.tom.cpm.blockbench.proxy.jq.JQueryNode;
 import com.tom.cpm.blockbench.proxy.jq.JQueryNode.SpectrumInit;
-import com.tom.cpm.blockbench.proxy.three.MeshBasicMaterial;
 import com.tom.cpm.blockbench.proxy.three.ThreeColor;
+import com.tom.cpm.blockbench.util.MaterialGroup;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
@@ -57,26 +57,24 @@ public class CPMVisuals {
 	}
 
 	private static void updateCubeMaterial(Cube c) {
+		MaterialGroup group = c.mesh.material.getMaterialGroup();
 		if (c.getRecolor() != -1) {
-			if (c.mesh.material.isColor()) {
-				((MeshBasicMaterial) c.mesh.material).color = ThreeColor.make(c.getRecolor());
+			if (group.isColor()) {
+				group.setColor(ThreeColor.make(c.getRecolor()));
 			} else {
-				c.mesh.material = c.mesh.material.makeRecolor(c.getRecolor(), c.isColorCube());
+				c.mesh.material = group.makeRecolor(ThreeColor.make(c.getRecolor()), c.isColorCube());
 			}
-		} else if (c.mesh.material.isColor()) {
-			c.mesh.material = c.mesh.material.getOriginal();
+		} else if (group.isColor()) {
+			c.mesh.material = group.getOriginal();
 		}
-		c.mesh.material = c.glow ? c.mesh.material.getGlow() : c.mesh.material.getNormal();
+		group = c.mesh.material.getMaterialGroup();
+		c.mesh.material = c.glow ? group.getGlow() : group.getNormal();
 	}
 
-	private static void setCubeColor(Cube c, float r, float g, float b) {
-		if (c.mesh.material.isColor())
-			((MeshBasicMaterial) c.mesh.material).color = ThreeColor.make(r, g, b);
-	}
-
-	private static void setCubeColor(Cube c, int color) {
-		if (c.mesh.material.isColor())
-			((MeshBasicMaterial) c.mesh.material).color = ThreeColor.make(color);
+	private static void setCubeColor(Cube c, ThreeColor color) {
+		MaterialGroup group = c.mesh.material.getMaterialGroup();
+		if (group.isColor())
+			group.setColor(color);
 	}
 
 	private static void displayAnimation() {
@@ -111,7 +109,7 @@ public class CPMVisuals {
 							if (e instanceof Cube) {
 								Cube c = (Cube) e;
 								if (c.canRecolor()) {
-									setCubeColor(c, color.x / 255f, color.y / 255f, color.z / 255f);
+									setCubeColor(c, ThreeColor.make(color.x / 255f, color.y / 255f, color.z / 255f));
 								}
 							}
 						}
@@ -172,7 +170,7 @@ public class CPMVisuals {
 						c.visibility = c.defaultVisible;
 
 						if (c.canRecolor()) {
-							setCubeColor(c, c.getRecolor());
+							setCubeColor(c, ThreeColor.make(c.getRecolor()));
 						}
 					}
 				}

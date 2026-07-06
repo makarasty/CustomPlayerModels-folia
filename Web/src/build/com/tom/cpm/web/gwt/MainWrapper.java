@@ -125,8 +125,6 @@ public class MainWrapper {
 			ClassSrcTransformer.transformers.add(c -> c.regexTransformBody("System\\.nanoTime\\(\\)", "System.currentTimeMillis()"));
 			ClassSrcTransformer.transformers.add(c -> c.regexTransformBody("Byte\\.toUnsignedInt\\(", "com.tom.cpm.web.client.java.Java.toUnsignedInt("));
 			ClassSrcTransformer.transformers.add(c -> c.regexTransformBody("\\/\\/\\$\\{fill_resource_map_lqsnlna\\}\\$", resGen));
-			// TODO temporary hack to build it
-			ClassSrcTransformer.transformers.add(c -> c.regexTransformBody("public void registerPluginClass\\(String className\\)", "public @com.google.common.annotations.GwtIncompatible(\"\") void registerPluginClass(String className)"));
 			ClassSrcTransformer.addImportTransformRegex("^java\\.nio\\.(\\w+)$", "com.tom.cpm.web.client.java.nio.$1");
 			ClassSrcTransformer.addImportTransform("java.io.DataInput", "com.tom.cpm.web.client.java.io.DataInput");
 			ClassSrcTransformer.addImportTransform("java.io.DataInputStream", "com.tom.cpm.web.client.java.io.DataInputStream");

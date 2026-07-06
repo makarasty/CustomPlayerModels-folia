@@ -67,6 +67,8 @@ task shadowJarPrimer(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shad
 
 volde {
 	runs {
+		def dump = file("${buildDir}/obf_dump.cfg").absolutePath
+
 		client {
 			programArg "tom5454"
 			vmArg "-Xdebug"
@@ -76,9 +78,9 @@ volde {
 			vmArg "-Dcpmcore.spc=true"
 			vmArg "-Dcpmcore.env.client=true"
 			vmArg "-Dcpmcore.asm_dump=true"
-			vmArg "-Dcpmcore.dump=\"" + file("${buildDir}/obf_dump.cfg").absolutePath + "\""
-			vmArg "-Dcpmcore.dumpsrc=\"" + shadowJarPrimer.archivePath + "\""
-			vmArg "-javaagent:\"" + shadowJarPrimer.archivePath + "\""
+			vmArg "-Dcpmcore.dump=${dump}"
+			vmArg "-Dcpmcore.dumpsrc=${shadowJarPrimer.archivePath}"
+			vmArg "-javaagent:${shadowJarPrimer.archivePath}"
 		}
 		obfDump {
 			environment = "client"
@@ -86,9 +88,9 @@ volde {
 			runDir = "run"
 			vmArg "-Dcpmcore.deobf=true"
 			vmArg "-Dcpmcore.env.client=true"
-			vmArg "-Dcpmcore.dump=\"" + file("${buildDir}/obf_dump.cfg").absolutePath + "\""
-			vmArg "-Dcpmcore.dumpsrc=\"" + shadowJarPrimer.archivePath + "\""
-			vmArg "-javaagent:\"" + shadowJarPrimer.archivePath + "\""
+			vmArg "-Dcpmcore.dump=${dump}"
+			vmArg "-Dcpmcore.dumpsrc=${shadowJarPrimer.archivePath}"
+			vmArg "-javaagent:${shadowJarPrimer.archivePath}"
 			vmArg "-Dcpmcore.dump.exit=true"
 		}
 	}

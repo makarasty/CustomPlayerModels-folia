@@ -306,7 +306,8 @@ public class BBActions {
 		boolean add = true;
 		for (int i = 0; i < Toolbars.animations.children.length; i++) {
 			BarItem bi = Toolbars.animations.children[i];
-			if(bi.id.equals("add_animation")) {
+			if (bi.id == null)continue;
+			if (bi.id.equals("add_animation")) {
 				ConditionUtil.and(bi.condition, a -> bi.condition = a, CPMCodec.notCPM());
 			} else if(bi.id.equals("cpm_animation_wizard")) {
 				add = false;

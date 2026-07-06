@@ -72,7 +72,7 @@ public class ServerProxy extends CommonProxy {
 			String r = sender.getUsername();
 			t = "[" + r + ": " + t + "]";
 			Log.info(t);
-			FMLServerHandler.instance().getServer().configManager.sendChatMessageToAllOps("§7§o" + t);
+			FMLServerHandler.instance().getServer().configManager.sendChatMessageToAllOps("\u00A77\u00A7o" + t);
 		}
 	};
 

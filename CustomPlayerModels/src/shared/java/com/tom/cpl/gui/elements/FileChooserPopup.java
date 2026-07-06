@@ -2,6 +2,7 @@ package com.tom.cpl.gui.elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
@@ -241,6 +242,7 @@ public class FileChooserPopup extends PopupPanel {
 				if(file.isDirectory())return true;
 				return filter.test(file, name);
 			});
+			Arrays.sort(fs);
 			if(currDir.toPath().getNameCount() == 0) {
 				files = fs;
 			} else {

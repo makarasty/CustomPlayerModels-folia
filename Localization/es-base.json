@@ -1273,6 +1273,7 @@
   "bb-label.warn.uvDecimalFixer.info": "Tu modelo incluye cubos con UVS decimales o tamaños decimales.\\El reparador de UVs decimales aplicó un cambio de tamaño de x16 a la grilla.\\Puedes ignorar este mensaje si eso esta bien.\\Vea la lista de cubos afectados:",
   "bb-label.error.failedToLoadTexture": "Fallo en cargar los datos para la textura: %s\\Por favor, reinicia Blockbench e intentelo de nuevo\\Causa: %s",
   "bb-label.openedInBB": "Por favor haga click en la ventana de Blockbench para continuar.",
+  "bb-label.error.initFailed": "UNLOCALIZED: Unexpected error while loading the CPM Plugin",
   "bb-tooltip.export.renameGroup": "Renombrar el grupo al tipo seleccionado\\Si un grupo ya tiene el mismo nombre la acción va a fallar.",
   "bb-tooltip.anim.snapping": "El ajuste determina la resolucion de exporte para CPM.\\La animacion exportada va a interpolar linearmente a los fotogramas por segundo.",
   "bb-tooltip.warn.uvDecimalFixerApplied": "Haga click en el botón %s para mostrar una lista de cubos afectados.",

@@ -16,7 +16,7 @@ public class MeshBasicMaterial extends ThreeMaterial {
 
 	@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 	public static class MeshBasicMaterialInit {
-		public int color, side;
+		public int side;
 		public boolean vertexColors, depthWrite, transparent;
 		public float alphaTest;
 		public ThreeTexture map;

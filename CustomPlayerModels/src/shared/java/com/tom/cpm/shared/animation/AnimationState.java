@@ -94,8 +94,8 @@ public class AnimationState {
 		else if(crawling && registry.hasPoseAnimations(VanillaPose.CRAWLING))return VanillaPose.CRAWLING;
 		else if(swimming)return VanillaPose.SWIMMING;
 		else if(retroSwimming && registry.hasPoseAnimations(VanillaPose.RETRO_SWIMMING))return VanillaPose.RETRO_SWIMMING;
-		else if(isClimbing && Math.abs(moveAmountY) > 0.05F && registry.hasPoseAnimations(VanillaPose.CLIMBING_ON_LADDER))return VanillaPose.CLIMBING_ON_LADDER;
-		else if(isClimbing && registry.hasPoseAnimations(VanillaPose.ON_LADDER))return VanillaPose.ON_LADDER;
+		else if(isOnLadder && Math.abs(moveAmountY) > 0.05F && registry.hasPoseAnimations(VanillaPose.CLIMBING_ON_LADDER))return VanillaPose.CLIMBING_ON_LADDER;
+		else if(isOnLadder && registry.hasPoseAnimations(VanillaPose.ON_LADDER))return VanillaPose.ON_LADDER;
 		else if(jumping + 500 > time && registry.hasPoseAnimations(VanillaPose.JUMPING))return VanillaPose.JUMPING;
 		else if(sneaking)return (Math.abs(moveAmountX) > 0 || Math.abs(moveAmountZ) > 0) && registry.hasPoseAnimations(VanillaPose.SNEAK_WALK) ? VanillaPose.SNEAK_WALK : VanillaPose.SNEAKING;
 		else if(sprinting)return VanillaPose.RUNNING;
@@ -179,11 +179,6 @@ public class AnimationState {
 			break;
 		}
 		return null;
-	}
-
-	public void preAnimate() {
-		if(isOnLadder && moveAmountY > 0)isClimbing = true;
-		else if(!isOnLadder)isClimbing = false;
 	}
 
 	public static enum VRState {

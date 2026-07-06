@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.google.common.annotations.GwtIncompatible;
+
 import com.tom.cpm.shared.util.Log;
 
 public class CPMApiManager implements CPMPluginRegistry {
@@ -31,6 +33,7 @@ public class CPMApiManager implements CPMPluginRegistry {
 		}
 	}
 
+	@GwtIncompatible("Reflection")
 	public void registerPluginClass(String className) {
 		try {
 			Class<?> asmClass = Class.forName(className);

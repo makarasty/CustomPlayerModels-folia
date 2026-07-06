@@ -1,5 +1,6 @@
 package com.tom.cpm.web.gwt;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 public class ClasspathFix {
 
 	public static String getFixedClasspath() {
-		String[] cp = System.getProperty("java.class.path").split(";");
+		String[] cp = System.getProperty("java.class.path").split(File.pathSeparator);
 		Map<String, Integer> sortMap = new HashMap<>();
 		for (int i = 0; i < cp.length; i++) {
 			if(cp[i].endsWith(".jar"))
@@ -17,6 +18,6 @@ public class ClasspathFix {
 			else
 				sortMap.put(cp[i], i);
 		}
-		return Arrays.stream(cp).sorted(Comparator.comparingInt(sortMap::get)).collect(Collectors.joining(";"));
+		return Arrays.stream(cp).sorted(Comparator.comparingInt(sortMap::get)).collect(Collectors.joining(File.pathSeparator));
 	}
 }

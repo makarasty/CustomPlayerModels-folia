@@ -3,10 +3,11 @@ package com.tom.cpm.mixin.compat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.vivecraft.client_vr.provider.ControllerType;
 import org.vivecraft.client_vr.render.VRArmRenderer;
 
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
@@ -51,14 +52,12 @@ public class VRArmRendererMixin_$vivecraft extends AvatarRenderer<AbstractClient
 		CustomPlayerModelsClient.INSTANCE.renderHandPost(getModel());
 	}
 
-	@ModifyArg(at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/rendertype/RenderTypes;entityTranslucent("
-					+ "Lnet/minecraft/resources/Identifier;)Lnet/minecraft/client/renderer/rendertype/RenderType;"
-			), method = "renderHand")
-	public Identifier getSkinTex(Identifier arg) {
-		ModelTexture tex = new ModelTexture(arg);
+	@Inject(at = @At("HEAD"), method = "renderHand")
+	public void onRenderHand(
+			ControllerType side, PoseStack poseStack, SubmitNodeCollector collector, int combinedLight,
+			Identifier identifier, ModelPart rendererArm, boolean sleeve, CallbackInfo cbi, @Local LocalRef<Identifier> skin) {
+		ModelTexture tex = new ModelTexture(identifier);
 		CustomPlayerModelsClient.mc.getPlayerRenderManager().bindSkin(getModel(), tex, TextureSheetType.SKIN);
-		return tex.getTexture();
+		skin.set(tex.getTexture());
 	}
 }

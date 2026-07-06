@@ -15,11 +15,13 @@ import com.tom.cpm.blockbench.proxy.Codec;
 import com.tom.cpm.blockbench.proxy.Global;
 import com.tom.cpm.blockbench.proxy.NodePreviewController;
 import com.tom.cpm.blockbench.proxy.Plugin;
+import com.tom.cpm.blockbench.util.PopupDialogs;
 import com.tom.cpm.web.client.FS;
 import com.tom.cpm.web.client.LocalStorageFS;
 import com.tom.cpm.web.client.WebMC;
 import com.tom.cpm.web.client.java.Java;
 import com.tom.cpm.web.client.render.RenderSystem;
+import com.tom.cpm.web.client.util.I18n;
 import com.tom.cpm.web.client.util.LoggingPrintStream;
 import com.tom.ugwt.client.ExceptionUtil;
 
@@ -70,10 +72,16 @@ public class PluginStart implements EntryPoint {
 	}
 
 	public static void onLoad() {
-		CPMCodec.init();
-		CPMVisuals.init();
-		ProjectGenerator.initDialog();
-		BBActions.load();
+		try {
+			CPMCodec.init();
+			CPMVisuals.init();
+			ProjectGenerator.initDialog();
+			BBActions.load();
+		} catch (Exception e) {
+			PopupDialogs.displayError(I18n.formatNl("bb-label.error.initFailed"), e);
+			onUnload();
+			cleanup.clear();
+		}
 	}
 
 	public static void onUnload() {

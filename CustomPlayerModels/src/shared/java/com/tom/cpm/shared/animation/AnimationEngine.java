@@ -121,7 +121,6 @@ public class AnimationEngine {
 		long time = getTime();
 		AnimationRegistry reg = def.getAnimations();
 		if(state.animationMode == AnimationMode.PLAYER) {
-			state.preAnimate();
 			VanillaPose pose = state.getMainPose(time, reg);
 			if (MinecraftClientAccess.get().getNetHandler().hasServerCap(ServerCaps.GESTURES) && state.gestureData != null && state.gestureData.length > 1) {
 				if(state.gestureData[0] == 0) {
@@ -165,7 +164,6 @@ public class AnimationEngine {
 			case FIRST_PERSON:
 			case GUI:
 			{
-				state.preAnimate();
 				List<AnimationTrigger> anim = reg.getPoseAnimations(state.currentPose);
 				h.addAnimations(state, anim, state.currentPose);
 				state.collectAnimations(p -> h.addAnimations(state, reg.getPoseAnimations(p), p), reg);

@@ -1571,5 +1571,6 @@
   "cpmmodels-tooltip.project.idCopied": "Project id copied to clipboard",
   "label.cpm.pose.spear_left": "Spear Left",
   "label.cpm.pose.spear_right": "Spear Right",
-  "button.cpm.heldItem.spear": "Spear"
+  "button.cpm.heldItem.spear": "Spear",
+  "bb-label.error.initFailed": "Unexpected error while loading the CPM Plugin"
 }

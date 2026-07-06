@@ -51,7 +51,7 @@ public class Command {
 					return true;
 				}
 			} catch (CommandException e) {
-				sendMessage(sender, "§c" + e.msg.<String>remap());
+				sendMessage(sender, "\u00A7c" + e.msg.<String>remap());
 				return true;
 			}
 			return false;

@@ -1571,5 +1571,6 @@
   "label.cpm.pose.spear_left": "Spear Left",
   "label.cpm.pose.spear_right": "Spear Right",
   "cpmmodels-label.userNotLoggedIn": "User not logged in",
-  "cpmmodels-tooltip.project.idCopied": "Project id copied to clipboard"
+  "cpmmodels-tooltip.project.idCopied": "Project id copied to clipboard",
+  "bb-label.error.initFailed": "Unexpected error while loading the CPM Plugin"
 }
